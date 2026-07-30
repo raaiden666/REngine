@@ -1,11 +1,9 @@
 mod app;
+mod app_builder;
 mod app_config;
 mod app_runtime;
-mod editor;
-mod engine;
+mod plugin;
 
-pub use app::App;
-pub use app_config::AppConfig;
+pub use {app::App, app_builder::AppBuilder, plugin::Plugin};
 
-pub(crate) use app_runtime::AppRuntime;
-pub(crate) use editor::Editor;
+pub(crate) use {app_config::AppConfig, app_runtime::AppRuntime};

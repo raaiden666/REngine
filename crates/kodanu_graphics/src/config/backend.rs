@@ -1,7 +1,7 @@
 use {bitflags::bitflags, wgpu::Backends};
 
 bitflags! {
-    #[derive(Default, Debug, Clone, Copy, PartialEq, Eq, Hash)]
+    #[derive(Default, Debug, Clone, Copy, Eq, PartialEq, Hash)]
     pub struct Backend: u32 {
         const VULKAN = 1 << 0;
         const METAL = 1 << 1;

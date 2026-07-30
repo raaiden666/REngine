@@ -3,7 +3,8 @@ name = "kodanu_scheduler"
 version = "0.1.0"
 edition = "2024"
 
+[lib]
+path = "src/_lib.rs"
+
 [dependencies]
-kodanu_input = { workspace = true }
-kodanu_time = { workspace = true }
-kodanu_editor = { workspace = true }
+kodanu_ecs = { workspace = true }

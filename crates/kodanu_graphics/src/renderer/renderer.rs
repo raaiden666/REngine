@@ -2,7 +2,6 @@ use crate::{
     AssetResources, RenderItem, RendererConfig, SampleCount,
     gpu::{GraphicsDevice, RenderSurface, RenderTexture, SurfaceFrame},
     pipeline::GraphicsPipeline,
-    renderer::FrameStatus,
     resources::FrameResources,
     setup::{create_device_and_surface, create_render_surface},
 };
@@ -13,11 +12,7 @@ use wgpu::{
     TextureViewDescriptor,
 };
 
-use {
-    kodanu_math::{Mat4, UVec2},
-    kodanu_window::Window,
-    pollster::block_on,
-};
+use {kodanu_math::Mat4, kodanu_math::UVec2, kodanu_window::Window, pollster::block_on};
 
 pub struct Renderer {
     graphics_device: GraphicsDevice,
@@ -65,8 +60,8 @@ impl Renderer {
             graphics_device,
             render_surface,
             graphics_pipeline,
-            frame_resources,
             asset_resources,
+            frame_resources,
             depth_target,
             color_target,
         }
@@ -74,23 +69,31 @@ impl Renderer {
 }
 
 impl Renderer {
-    pub fn render(&mut self, view_projection: Mat4, items: &[RenderItem]) -> FrameStatus {
-        let (frame, result) = match self.render_surface.acquire_frame() {
-            SurfaceFrame::Ready(frame) => (frame, FrameStatus::Success),
-            SurfaceFrame::Suboptimal(frame) => (frame, FrameStatus::Suboptimal),
-            SurfaceFrame::Timeout => return FrameStatus::Timeout,
-            SurfaceFrame::Occluded => return FrameStatus::Occluded,
-            SurfaceFrame::Outdated => return FrameStatus::Outdated,
-            SurfaceFrame::Lost => return FrameStatus::Lost,
-            SurfaceFrame::Validation => return FrameStatus::Validation,
-        };
+    pub fn render(&mut self, view_projection: Mat4, items: &[RenderItem]) {
+        match self.render_surface.acquire_frame() {
+            SurfaceFrame::Ready(frame) => {
+                self.call_draw(frame, view_projection, items);
+            }
+            SurfaceFrame::Suboptimal(frame) => {
+                self.call_draw(frame, view_projection, items);
 
+                self.surface_resize(self.surface_size());
+            }
+            SurfaceFrame::Outdated | SurfaceFrame::Lost => {
+                self.surface_resize(self.surface_size());
+            }
+            SurfaceFrame::Validation => {
+                panic!("Wgpu validation error");
+            }
+            _ => {}
+        };
+    }
+
+    fn call_draw(&mut self, frame: SurfaceTexture, view_projection: Mat4, items: &[RenderItem]) {
         self.frame_resources
             .update(self.graphics_device.queue(), view_projection, items);
 
         self.draw_frame(frame, items);
-
-        result
     }
 
     fn draw_frame(&mut self, frame: SurfaceTexture, items: &[RenderItem]) {

@@ -2,7 +2,7 @@ use crate::PerspectiveProjection;
 
 use kodanu_math::Mat4;
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub enum Projection {
     Perspective(PerspectiveProjection),
 }

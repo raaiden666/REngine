@@ -2,7 +2,7 @@ use crate::Projection;
 
 use {kodanu_math::Mat4, kodanu_transform::Transform};
 
-#[derive(Default, Debug)]
+#[derive(Default, Debug, Clone, Copy)]
 pub struct Camera {
     projection: Projection,
 }

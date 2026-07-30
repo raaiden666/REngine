@@ -2,9 +2,11 @@ use crate::{Component, ComponentStorage};
 
 use std::{any::Any, mem::replace};
 
+pub const INVALID_DENSE_INDEX: u32 = u32::MAX;
+
 pub struct SparseSet<T> {
     pub(crate) sparse: Vec<u32>,
-    pub(crate) indicies: Vec<u32>,
+    pub(crate) indices: Vec<u32>,
     pub(crate) dense: Vec<T>,
 }
 
@@ -12,7 +14,7 @@ impl<T> Default for SparseSet<T> {
     fn default() -> Self {
         Self {
             sparse: Vec::new(),
-            indicies: Vec::new(),
+            indices: Vec::new(),
             dense: Vec::new(),
         }
     }
@@ -22,102 +24,76 @@ impl<T> SparseSet<T> {
     pub fn with_capacity(capacity: usize) -> Self {
         Self {
             sparse: Vec::with_capacity(capacity),
-            indicies: Vec::with_capacity(capacity),
+            indices: Vec::with_capacity(capacity),
             dense: Vec::with_capacity(capacity),
         }
-    }
-
-    #[inline]
-    pub fn len(&self) -> usize {
-        self.dense.len()
-    }
-
-    #[inline]
-    pub fn indices(&self) -> &[u32] {
-        &self.indicies
-    }
-
-    #[inline]
-    pub fn dense(&self) -> &[T] {
-        &self.dense
-    }
-
-    #[inline]
-    pub fn dense_mut(&mut self) -> &mut [T] {
-        &mut self.dense
-    }
-
-    #[inline]
-    pub fn sparse(&self) -> &[u32] {
-        &self.sparse
-    }
-
-    #[inline]
-    pub fn is_empty(&self) -> bool {
-        self.dense.is_empty()
-    }
-
-    #[inline]
-    pub fn contains(&self, entity_index: u32) -> bool {
-        self.dense_index(entity_index).is_some()
-    }
-
-    #[inline]
-    pub fn get(&self, entity_index: u32) -> Option<&T> {
-        let dense_index = self.dense_index(entity_index)?;
-        Some(&self.dense[dense_index])
-    }
-
-    #[inline]
-    pub fn get_mut(&mut self, entity_index: u32) -> Option<&mut T> {
-        let dense_index = self.dense_index(entity_index)?;
-        Some(&mut self.dense[dense_index])
-    }
-
-    pub fn insert(&mut self, entity_index: u32, component: T) -> Option<T> {
-        self.ensure_capacity(entity_index);
-
-        if let Some(dense_index) = self.dense_index(entity_index) {
-            return Some(replace(&mut self.dense[dense_index], component));
-        }
-
-        let dense_index = self.dense.len() as u32;
-
-        self.sparse[entity_index as usize] = dense_index;
-        self.indicies.push(entity_index);
-        self.dense.push(component);
-
-        None
-    }
-
-    pub fn remove(&mut self, entity_index: u32) -> Option<T> {
-        let dense_index = self.dense_index(entity_index)?;
-        self.sparse[entity_index as usize] = u32::MAX;
-
-        let component = self.dense.swap_remove(dense_index);
-        self.indicies.swap_remove(dense_index);
-
-        if dense_index < self.dense.len() {
-            let moved_entity = self.indicies[dense_index];
-            self.sparse[moved_entity as usize] = dense_index as u32;
-        }
-
-        Some(component)
-    }
-
-    pub fn clear(&mut self) {
-        self.sparse.fill(u32::MAX);
-        self.indicies.clear();
-        self.dense.clear();
     }
 }
 
 impl<T> SparseSet<T> {
     #[inline]
-    fn dense_index(&self, entity_index: u32) -> Option<usize> {
-        let dense = *self.sparse.get(entity_index as usize)?;
+    pub fn contains(&self, entity: u32) -> bool {
+        self.dense_index(entity).is_some()
+    }
 
-        if dense == u32::MAX {
+    #[inline]
+    pub fn get(&self, entity: u32) -> Option<&T> {
+        let dense = self.dense_index(entity)?;
+        Some(&self.dense[dense])
+    }
+
+    #[inline]
+    pub fn get_mut(&mut self, entity: u32) -> Option<&mut T> {
+        let dense = self.dense_index(entity)?;
+        Some(&mut self.dense[dense])
+    }
+
+    #[inline]
+    pub fn dense_mut(&mut self) -> &mut Vec<T> {
+        &mut self.dense
+    }
+
+    #[inline]
+    pub fn insert(&mut self, entity: u32, component: T) -> Option<T> {
+        self.ensure_capacity(entity);
+
+        if let Some(dense) = self.dense_index(entity) {
+            return Some(replace(&mut self.dense[dense], component));
+        }
+
+        let dense = self.dense.len() as u32;
+
+        self.sparse[entity as usize] = dense;
+
+        self.indices.push(entity);
+        self.dense.push(component);
+
+        None
+    }
+
+    #[inline]
+    pub fn remove(&mut self, entity: u32) -> Option<T> {
+        let dense = self.dense_index(entity)?;
+        self.sparse[entity as usize] = INVALID_DENSE_INDEX;
+
+        let component = self.dense.swap_remove(dense);
+        self.indices.swap_remove(dense);
+
+        if dense < self.indices.len() {
+            let moved = self.indices[dense];
+            self.sparse[moved as usize] = dense as u32;
+        }
+
+        Some(component)
+    }
+}
+
+impl<T> SparseSet<T> {
+    #[inline]
+    pub(crate) fn dense_index(&self, entity: u32) -> Option<usize> {
+        let dense = *self.sparse.get(entity as usize)?;
+
+        if dense == INVALID_DENSE_INDEX {
             return None;
         }
 
@@ -125,25 +101,28 @@ impl<T> SparseSet<T> {
     }
 
     #[inline]
-    fn ensure_capacity(&mut self, entity_index: u32) {
-        let required = entity_index as usize + 1;
+    fn ensure_capacity(&mut self, entity: u32) {
+        let requied = entity as usize + 1;
 
-        if self.sparse.len() < required {
-            self.sparse.resize(required, u32::MAX);
+        if self.sparse.len() < requied {
+            self.sparse.resize(requied, INVALID_DENSE_INDEX);
         }
     }
 }
 
 impl<T: Component> ComponentStorage for SparseSet<T> {
+    #[inline]
+    fn remove_from_entity(&mut self, entity: u32) {
+        let _ = self.remove(entity);
+    }
+
+    #[inline]
     fn as_any(&self) -> &dyn Any {
         self
     }
 
+    #[inline]
     fn as_any_mut(&mut self) -> &mut dyn Any {
         self
-    }
-
-    fn remove_entity(&mut self, entity_index: u32) {
-        let _ = self.remove(entity_index);
     }
 }

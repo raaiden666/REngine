@@ -1,51 +1,71 @@
-use crate::entity::Entity;
+use crate::Entity;
 
 #[derive(Default)]
 pub struct EntityAllocator {
-    generations: Vec<u32>,
-    free_indicies: Vec<u32>,
+    free: Vec<u32>,
+    gens: Vec<u32>,
 }
 
 impl EntityAllocator {
     pub fn with_capacity(capacity: usize) -> Self {
         Self {
-            generations: Vec::with_capacity(capacity),
-            free_indicies: Vec::with_capacity(capacity),
+            free: Vec::with_capacity(capacity),
+            gens: Vec::with_capacity(capacity),
         }
     }
+}
 
+impl EntityAllocator {
+    #[inline]
     pub fn create(&mut self) -> Entity {
-        if let Some(index) = self.free_indicies.pop() {
-            Entity {
-                index,
-                generation: self.generations[index as usize],
-            }
+        if let Some(id) = self.free.pop() {
+            let gens = self.gens[id as usize];
+
+            Entity { id, gens }
         } else {
-            let index = self.generations.len() as u32;
+            let id = self.gens.len() as u32;
 
-            self.generations.push(0);
+            self.gens.push(0);
 
-            Entity {
-                index,
-                generation: 0,
-            }
+            Entity { id, gens: 0 }
         }
     }
 
+    #[inline]
     pub fn destroy(&mut self, entity: Entity) -> bool {
         if !self.is_alive(entity) {
             return false;
         }
 
-        self.generations[entity.index as usize] += 1;
-        self.free_indicies.push(entity.index);
+        self.gens[entity.id as usize] += 1;
+
+        self.free.push(entity.id);
 
         true
     }
 
+    #[inline]
     pub fn is_alive(&self, entity: Entity) -> bool {
-        self.generations
-            .get(entity.index as usize)
-            .is_some_and(|generation| *generation == entity.generation)
+        let Some(&gens) = self.gens.get(entity.id as usize) else {
+            return false;
+        };
+
+        gens == entity.gens
+    }
+
+    #[inline]
+    pub fn len(&self) -> usize {
+        self.gens.len() - self.free.len()
+    }
+
+    #[inline]
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0
+    }
+
+    #[inline]
+    pub fn clear(&mut self) {
+        self.free.clear();
+        self.gens.clear();
     }
 }

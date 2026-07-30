@@ -8,3 +8,4 @@ path = "src/_lib.rs"
 
 [dependencies]
 kodanu_assets = { workspace = true }
+kodanu_color = { workspace = true }

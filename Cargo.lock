@@ -709,6 +709,8 @@ dependencies = [
  "kodanu_math",
  "kodanu_scene",
  "kodanu_scheduler",
+ "kodanu_systems",
+ "kodanu_time",
  "kodanu_transform",
  "kodanu_window",
 ]
@@ -718,17 +720,15 @@ name = "kodanu_app"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "kodanu_assets",
- "kodanu_color",
+ "kodanu_camera",
+ "kodanu_ecs",
  "kodanu_editor",
  "kodanu_graphics",
  "kodanu_input",
  "kodanu_log",
  "kodanu_math",
- "kodanu_scene",
  "kodanu_scheduler",
  "kodanu_time",
- "kodanu_transform",
  "kodanu_window",
  "tracing-subscriber",
  "winit",
@@ -740,8 +740,6 @@ version = "0.1.0"
 dependencies = [
  "bytemuck",
  "kodanu_color",
- "kodanu_culling",
- "kodanu_math",
 ]
 
 [[package]]
@@ -790,6 +788,7 @@ dependencies = [
  "bitflags 2.13.0",
  "bytemuck",
  "kodanu_assets",
+ "kodanu_ecs",
  "kodanu_editor",
  "kodanu_math",
  "kodanu_scene",
@@ -803,6 +802,8 @@ dependencies = [
 name = "kodanu_input"
 version = "0.1.0"
 dependencies = [
+ "hashbrown 0.17.1",
+ "kodanu_ecs",
  "kodanu_math",
  "winit",
 ]
@@ -826,20 +827,39 @@ name = "kodanu_scene"
 version = "0.1.0"
 dependencies = [
  "kodanu_assets",
+ "kodanu_color",
 ]
 
 [[package]]
 name = "kodanu_scheduler"
 version = "0.1.0"
 dependencies = [
- "kodanu_editor",
+ "kodanu_ecs",
+]
+
+[[package]]
+name = "kodanu_systems"
+version = "0.1.0"
+dependencies = [
+ "kodanu_app",
+ "kodanu_assets",
+ "kodanu_camera",
+ "kodanu_color",
+ "kodanu_ecs",
  "kodanu_input",
+ "kodanu_math",
+ "kodanu_scene",
+ "kodanu_scheduler",
  "kodanu_time",
+ "kodanu_transform",
 ]
 
 [[package]]
 name = "kodanu_time"
 version = "0.1.0"
+dependencies = [
+ "kodanu_ecs",
+]
 
 [[package]]
 name = "kodanu_transform"
@@ -852,6 +872,7 @@ dependencies = [
 name = "kodanu_window"
 version = "0.1.0"
 dependencies = [
+ "kodanu_ecs",
  "kodanu_math",
  "wgpu",
  "winit",

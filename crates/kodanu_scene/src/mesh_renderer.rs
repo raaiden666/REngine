@@ -1,11 +1,18 @@
 use {
     kodanu_assets::{Material, Mesh},
+    kodanu_color::Color,
     std::sync::Arc,
 };
 
 pub struct MeshRenderer {
     mesh: Arc<Mesh>,
     material: Arc<Material>,
+}
+
+impl Default for MeshRenderer {
+    fn default() -> Self {
+        Self::new(Mesh::cube_2d(), Material::new(Color::WHITE))
+    }
 }
 
 impl MeshRenderer {

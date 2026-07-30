@@ -89,7 +89,9 @@ impl RenderTexture {
             bias: DepthBiasState::default(),
         }
     }
+}
 
+impl RenderTexture {
     fn create_texture(
         descriptor: &RenderTextureDescriptor,
         device: &Device,

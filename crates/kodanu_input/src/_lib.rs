@@ -9,15 +9,9 @@ mod mouse_key;
 mod winit_handler;
 mod winit_mapper;
 
-pub use action::Action;
-pub use action_map::ActionMap;
-pub use axis::Axis;
-pub use input::Input;
-pub use key_code::KeyCode;
-pub use mouse_key::MouseKey;
-
-pub use winit_handler::{
-    handle_cursor_move, handle_keyboard_input, handle_mouse_input, handle_mouse_wheel,
+pub use {
+    action::Action, action_map::ActionMap, axis::Axis, input::Input, key_code::KeyCode,
+    mouse_key::MouseKey, winit_handler::WinitHandler,
 };
 
-pub(crate) use winit_mapper::{map_key_code, map_mouse_button};
+pub(crate) use winit_mapper::WinitMapper;

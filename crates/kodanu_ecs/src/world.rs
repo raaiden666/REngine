@@ -1,159 +1,150 @@
 use crate::{
-    Component, ComponentStorage, EntityAllocator, Query, QueryAccess, QueryIter, SparseSet,
-    UnsafeWorldCell, entity::Entity, query_access::validate,
+    Bundle, Component, ComponentRegistry, Entity, EntityAllocator, Resource, ResourceAccess,
+    ResourceRegistry, SparseSet, View, ViewAccess, WorldCell,
 };
-
-use {hashbrown::HashMap, std::any::Any, std::any::TypeId};
 
 #[derive(Default)]
 pub struct World {
-    entities: EntityAllocator,
-    storages: HashMap<TypeId, Box<dyn ComponentStorage>>,
-    resources: HashMap<TypeId, Box<dyn Any>>,
+    pub(crate) allocator: EntityAllocator,
+    pub(crate) storage: ComponentRegistry,
+    pub(crate) resources: ResourceRegistry,
 }
 
 impl World {
     pub fn with_capacity(capacity: usize) -> Self {
         Self {
-            entities: EntityAllocator::with_capacity(capacity),
-            storages: HashMap::with_capacity(capacity),
-            resources: HashMap::with_capacity(capacity),
+            allocator: EntityAllocator::with_capacity(capacity),
+            storage: ComponentRegistry::with_capacity(capacity),
+            resources: ResourceRegistry::with_capacity(capacity),
         }
-    }
-
-    pub fn spawn(&mut self) -> Entity {
-        self.entities.create()
-    }
-
-    pub fn despawn(&mut self, entity: Entity) -> bool {
-        if !self.entities.destroy(entity) {
-            return false;
-        }
-
-        for storage in self.storages.values_mut() {
-            storage.remove_entity(entity.index);
-        }
-
-        true
-    }
-
-    #[inline]
-    pub fn insert<T: Component>(&mut self, entity: Entity, component: T) -> Option<T> {
-        self.assert_alive(entity);
-
-        self.storage_entry::<T>().insert(entity.index, component)
-    }
-
-    pub fn insert_res<T: Component>(&mut self, resource: T) {
-        self.resources.insert(TypeId::of::<T>(), Box::new(resource));
-    }
-
-    pub fn remove<T: Component>(&mut self, entity: Entity) -> Option<T> {
-        if !self.entities.is_alive(entity) {
-            return None;
-        }
-
-        self.storage_entry::<T>().remove(entity.index)
-    }
-
-    #[inline]
-    pub fn get<T: Component>(&self, entity: Entity) -> Option<&T> {
-        if !self.entities.is_alive(entity) {
-            return None;
-        }
-
-        self.storage::<T>()?.get(entity.index)
-    }
-
-    #[inline]
-    pub fn get_mut<T: Component>(&mut self, entity: Entity) -> Option<&mut T> {
-        if !self.entities.is_alive(entity) {
-            return None;
-        }
-
-        self.storage_entry::<T>().get_mut(entity.index)
-    }
-
-    #[inline]
-    pub fn storage<T: Component>(&self) -> Option<&SparseSet<T>> {
-        self.storages
-            .get(&TypeId::of::<T>())?
-            .as_any()
-            .downcast_ref::<SparseSet<T>>()
-    }
-
-    #[inline]
-    pub fn storage_mut<T: Component>(&mut self) -> Option<&mut SparseSet<T>> {
-        self.storages
-            .get_mut(&TypeId::of::<T>())
-            .and_then(|storage| storage.as_any_mut().downcast_mut::<SparseSet<T>>())
-    }
-
-    #[inline]
-    pub(crate) fn storage_ptr<T: Component>(&self) -> Option<*const SparseSet<T>> {
-        let storage = self.storages.get(&TypeId::of::<T>())?;
-        let storage = storage.as_any().downcast_ref::<SparseSet<T>>()?;
-
-        Some(storage as *const SparseSet<T>)
-    }
-
-    #[inline]
-    pub(crate) fn storage_mut_ptr<T: Component>(&mut self) -> Option<*mut SparseSet<T>> {
-        let storage = self.storages.get_mut(&TypeId::of::<T>())?;
-        let storage = storage.as_any_mut().downcast_mut::<SparseSet<T>>()?;
-
-        Some(storage as *mut SparseSet<T>)
-    }
-
-    #[inline]
-    pub fn res<T: Component>(&self) -> Option<&T> {
-        self.resources.get(&TypeId::of::<T>())?.downcast_ref::<T>()
-    }
-
-    #[inline]
-    pub fn res_mut<T: Component>(&mut self) -> Option<&mut T> {
-        self.resources
-            .get_mut(&TypeId::of::<T>())?
-            .downcast_mut::<T>()
-    }
-
-    #[inline]
-    pub fn assert_alive(&self, entity: Entity) {
-        assert!(self.entities.is_alive(entity), "Entity not found");
-    }
-
-    fn storage_entry<T: Component>(&mut self) -> &mut SparseSet<T> {
-        self.storages
-            .entry(TypeId::of::<T>())
-            .or_insert_with(|| Box::new(SparseSet::<T>::default()))
-            .as_any_mut()
-            .downcast_mut::<SparseSet<T>>()
-            .unwrap()
     }
 }
 
 impl World {
     #[inline]
-    pub fn query<'w, Q>(&'w self) -> Option<QueryIter<'w, Q::Fetch<'w>>>
-    where
-        Q: Query + QueryAccess,
-    {
-        validate::<Q>();
-
-        let fetch = Q::create_fetch(UnsafeWorldCell::from_world(self))?;
-
-        Some(QueryIter::new(fetch))
+    pub fn spawn<T: Component>(&mut self, component: T) -> Entity {
+        let entity = self.allocator.create();
+        self.insert_component(entity, component);
+        entity
     }
 
     #[inline]
-    pub fn query_mut<'w, Q>(&'w mut self) -> Option<QueryIter<'w, Q::Fetch<'w>>>
+    pub fn spawn_bundle<B: Bundle>(&mut self, bundle: B) -> Entity {
+        let entity = self.allocator.create();
+        bundle.insert(entity, self);
+        entity
+    }
+
+    #[inline]
+    pub fn despawn(&mut self, entity: Entity) -> bool {
+        if !self.allocator.destroy(entity) {
+            return false;
+        }
+
+        self.storage.remove_from_entity(entity.id);
+
+        true
+    }
+
+    #[inline]
+    pub fn insert_component<T: Component>(&mut self, entity: Entity, component: T) -> Option<T> {
+        self.storage.insert(entity.id, component)
+    }
+
+    #[inline]
+    pub fn remove_component<T: Component>(&mut self, entity: Entity) -> Option<T> {
+        self.storage.remove(entity.id)
+    }
+
+    #[inline]
+    pub fn component<T: Component>(&mut self, entity: Entity) -> Option<&T> {
+        if !self.allocator.is_alive(entity) {
+            return None;
+        }
+
+        self.storage.get(entity.id)
+    }
+
+    #[inline]
+    pub fn component_mut<T: Component>(&mut self, entity: Entity) -> Option<&mut T> {
+        if !self.allocator.is_alive(entity) {
+            return None;
+        }
+
+        self.storage.get_mut(entity.id)
+    }
+
+    #[inline]
+    pub(crate) fn storage<T: Component>(&mut self) -> &SparseSet<T> {
+        self.storage.storage::<T>()
+    }
+
+    #[inline]
+    pub(crate) fn storage_mut<T: Component>(&mut self) -> &mut SparseSet<T> {
+        self.storage.storage_mut::<T>()
+    }
+
+    #[inline]
+    pub fn cell(&mut self) -> WorldCell<'_> {
+        WorldCell::from_world_mut(self)
+    }
+}
+
+impl World {
+    #[inline]
+    pub fn insert_resource<T: Resource>(&mut self, resource: T) -> Option<T> {
+        self.resources.insert(resource)
+    }
+
+    #[inline]
+    pub fn remove_resource<T: Resource>(&mut self) -> Option<T> {
+        self.resources.remove::<T>()
+    }
+
+    #[inline]
+    pub fn resource<T: Resource>(&self) -> Option<&T> {
+        self.resources.get::<T>()
+    }
+
+    #[inline]
+    pub fn resource_mut<T: Resource>(&mut self) -> Option<&mut T> {
+        self.resources.get_mut::<T>()
+    }
+
+    #[inline]
+    pub fn expect_resource<T: Resource>(&self) -> &T {
+        self.resources
+            .get::<T>()
+            .expect("Resource is not registered")
+    }
+
+    #[inline]
+    pub fn expect_resource_mut<T: Resource>(&mut self) -> &mut T {
+        self.resources
+            .get_mut::<T>()
+            .expect("Resource is not registered")
+    }
+
+    #[inline]
+    pub fn contains_resource<T: Resource>(&self) -> bool {
+        self.resources.contains::<T>()
+    }
+}
+
+impl World {
+    #[inline]
+    pub fn view<'w, A>(&'w mut self) -> View<'w, A::Storage>
     where
-        Q: Query + QueryAccess,
+        A: ViewAccess<'w>,
     {
-        validate::<Q>();
+        View::new(A::fetch(WorldCell::from_world_mut(self)))
+    }
 
-        let fetch = Q::create_fetch(UnsafeWorldCell::from_world_mut(self))?;
-
-        Some(QueryIter::new(fetch))
+    #[inline]
+    pub fn res<'w, A>(&'w mut self) -> A::Item
+    where
+        A: ResourceAccess<'w>,
+    {
+        A::fetch(WorldCell::from_world_mut(self))
     }
 }

@@ -1,6 +1,6 @@
 use crate::{Input, KeyCode, action::Action, axis::Axis, axis_binding::AxisBinding};
 
-use std::collections::HashMap;
+use hashbrown::HashMap;
 
 pub struct ActionMap {
     actions: HashMap<Action, Vec<KeyCode>>,
@@ -9,24 +9,15 @@ pub struct ActionMap {
 
 impl Default for ActionMap {
     fn default() -> Self {
-        let mut actions = HashMap::with_capacity(128);
-        let mut axis = HashMap::with_capacity(128);
+        let (actions, axis) = Self::create_binding(64);
 
-        actions.insert(Action::MoveForward, vec![KeyCode::W]);
-        actions.insert(Action::MoveBackward, vec![KeyCode::S]);
+        Self { actions, axis }
+    }
+}
 
-        actions.insert(Action::MoveLeft, vec![KeyCode::A]);
-        actions.insert(Action::MoveRight, vec![KeyCode::D]);
-
-        actions.insert(Action::MoveUp, vec![KeyCode::Space]);
-        actions.insert(Action::MoveDown, vec![KeyCode::LeftCtrl]);
-
-        axis.insert(Axis::MoveX, AxisBinding::new(KeyCode::A, KeyCode::D));
-        axis.insert(Axis::MoveY, AxisBinding::new(KeyCode::W, KeyCode::S));
-        axis.insert(Axis::MoveZ, AxisBinding::new(KeyCode::J, KeyCode::K));
-
-        axis.insert(Axis::LookX, AxisBinding::new(KeyCode::H, KeyCode::L));
-        axis.insert(Axis::LookY, AxisBinding::new(KeyCode::Q, KeyCode::E));
+impl ActionMap {
+    pub fn with_capacity(capacity: usize) -> Self {
+        let (actions, axis) = Self::create_binding(capacity);
 
         Self { actions, axis }
     }
@@ -64,5 +55,33 @@ impl ActionMap {
         }
 
         value
+    }
+}
+
+impl ActionMap {
+    fn create_binding(
+        capacity: usize,
+    ) -> (HashMap<Action, Vec<KeyCode>>, HashMap<Axis, AxisBinding>) {
+        let mut actions = HashMap::with_capacity(capacity);
+        let mut axis = HashMap::with_capacity(capacity);
+
+        actions.insert(Action::MoveForward, vec![KeyCode::W]);
+
+        actions.insert(Action::MoveBackward, vec![KeyCode::S]);
+
+        actions.insert(Action::MoveLeft, vec![KeyCode::A]);
+        actions.insert(Action::MoveRight, vec![KeyCode::D]);
+
+        actions.insert(Action::MoveUp, vec![KeyCode::Space]);
+        actions.insert(Action::MoveDown, vec![KeyCode::LeftCtrl]);
+
+        axis.insert(Axis::MoveX, AxisBinding::new(KeyCode::A, KeyCode::D));
+        axis.insert(Axis::MoveY, AxisBinding::new(KeyCode::W, KeyCode::S));
+        axis.insert(Axis::MoveZ, AxisBinding::new(KeyCode::J, KeyCode::K));
+
+        axis.insert(Axis::LookX, AxisBinding::new(KeyCode::H, KeyCode::L));
+        axis.insert(Axis::LookY, AxisBinding::new(KeyCode::Q, KeyCode::E));
+
+        (actions, axis)
     }
 }

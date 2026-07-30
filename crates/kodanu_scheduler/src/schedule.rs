@@ -1,15 +1,16 @@
-use crate::SystemContext;
+use kodanu_ecs::WorldCell;
 
-pub type System = fn(&mut SystemContext);
+pub type System = fn(WorldCell);
 
+#[derive(Default)]
 pub struct Schedule {
     systems: Vec<System>,
 }
 
-impl Default for Schedule {
-    fn default() -> Self {
+impl Schedule {
+    pub fn with_capacity(capacity: usize) -> Self {
         Self {
-            systems: Vec::with_capacity(1_000),
+            systems: Vec::with_capacity(capacity),
         }
     }
 }
@@ -20,9 +21,9 @@ impl Schedule {
     }
 
     #[inline]
-    pub fn run(&mut self, context: &mut SystemContext) {
-        for system in &self.systems {
-            system(context);
+    pub fn run(&mut self, world: WorldCell) {
+        for system in &mut self.systems {
+            system(world);
         }
     }
 }

@@ -1,6 +1,9 @@
 use crate::{KeyCode, MouseKey, button_state::ButtonState};
 
-use kodanu_math::{DVec2, Vec2};
+use {
+    kodanu_ecs::{WorldCell, Write},
+    kodanu_math::{DVec2, Vec2},
+};
 
 #[derive(Default)]
 pub struct Input {
@@ -11,14 +14,29 @@ pub struct Input {
 }
 
 impl Input {
-    #[inline]
-    pub fn begin_frame(&mut self) {
-        self.keyboard.begin_frame();
-        self.mouse.begin_frame();
-
-        self.mouse_wheel_delta = Vec2::ZERO;
+    pub fn with_capacity(capacity: usize) -> Self {
+        Self {
+            keyboard: ButtonState::with_capacity(capacity),
+            mouse: ButtonState::with_capacity(capacity),
+            mouse_position: DVec2::ZERO,
+            mouse_wheel_delta: Vec2::ZERO,
+        }
     }
+}
 
+impl Input {
+    #[inline]
+    pub fn update_end_frame_system(world: WorldCell) {
+        let input = world.res::<Write<Input>>();
+
+        input.keyboard.end_frame();
+        input.mouse.end_frame();
+
+        input.mouse_wheel_delta = Vec2::ZERO;
+    }
+}
+
+impl Input {
     #[inline]
     pub fn key_pressed(&self, key: KeyCode) -> bool {
         self.keyboard.is_pressed(key)

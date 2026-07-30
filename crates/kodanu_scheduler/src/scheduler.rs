@@ -1,30 +1,26 @@
-use crate::{Schedule, Stage, SystemContext, schedule::System};
+use crate::{Schedule, Stage, schedule::System};
 
-#[derive(Default)]
+use {kodanu_ecs::WorldCell, std::array::from_fn};
+
 pub struct Scheduler {
-    startup: Schedule,
-    pre_update: Schedule,
-    update: Schedule,
-    late_update: Schedule,
+    schedules: [Schedule; Stage::COUNT],
+}
+
+impl Default for Scheduler {
+    fn default() -> Self {
+        Self {
+            schedules: from_fn(|_| Schedule::default()),
+        }
+    }
 }
 
 impl Scheduler {
-    #[inline]
-    pub fn run(&mut self, stage: Stage, context: &mut SystemContext) {
-        match stage {
-            Stage::PreUpdate => &mut self.pre_update.run(context),
-            Stage::Startup => &mut self.startup.run(context),
-            Stage::Update => &mut self.update.run(context),
-            Stage::LateUpdate => &mut self.late_update.run(context),
-        };
+    pub fn add(&mut self, stage: Stage, system: System) {
+        self.schedules[stage.as_usize()].add(system);
     }
 
-    pub fn add(&mut self, stage: Stage, system: System) {
-        match stage {
-            Stage::PreUpdate => &mut self.pre_update.add(system),
-            Stage::Startup => &mut self.startup.add(system),
-            Stage::Update => &mut self.update.add(system),
-            Stage::LateUpdate => &mut self.late_update.add(system),
-        };
+    #[inline]
+    pub fn run(&mut self, stage: Stage, world: WorldCell) {
+        self.schedules[stage.as_usize()].run(world);
     }
 }

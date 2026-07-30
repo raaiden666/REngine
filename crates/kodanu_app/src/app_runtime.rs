@@ -1,53 +1,44 @@
-#![allow(dead_code)]
-
-use crate::{AppConfig, engine::Engine};
+use crate::AppConfig;
 
 use {
     anyhow::{Ok, Result},
+    kodanu_graphics::{RenderItem, Renderer},
+    kodanu_math::{Mat4, UVec2},
     kodanu_window::Window,
-    std::sync::Arc,
 };
 
-use winit::event_loop::ActiveEventLoop;
+use winit::{event_loop::ActiveEventLoop, window::WindowAttributes};
 
 pub(crate) struct AppRuntime {
     window: Window,
-    engine: Engine,
+    renderer: Renderer,
 }
 
 impl AppRuntime {
     pub fn new(event_loop: &ActiveEventLoop, config: &AppConfig) -> Result<Self> {
         let window = event_loop
-            .create_window(config.window_config().to_attributes())
+            .create_window(WindowAttributes::from(config.window()))
             .expect("Failed to create window");
 
-        let window = Window::new(Arc::new(window));
-        let engine = Engine::new(&window, config.renderer_config());
+        let window = Window::new(window);
+        let renderer = Renderer::new(&window, config.renderer());
 
         window.request_redraw();
 
-        Ok(Self { window, engine })
+        Ok(Self { window, renderer })
     }
 }
 
 impl AppRuntime {
-    #[inline]
-    pub fn window(&self) -> &Window {
-        &self.window
+    pub fn render(&mut self, view_projection: Mat4, items: &[RenderItem]) {
+        self.renderer.render(view_projection, items);
     }
 
-    #[inline]
-    pub fn window_mut(&mut self) -> &mut Window {
-        &mut self.window
+    pub fn request_redraw(&self) {
+        self.window.request_redraw();
     }
 
-    #[inline]
-    pub fn engine(&self) -> &Engine {
-        &self.engine
-    }
-
-    #[inline]
-    pub fn engine_mut(&mut self) -> &mut Engine {
-        &mut self.engine
+    pub fn surface_resize(&mut self, size: UVec2) {
+        self.renderer.surface_resize(size);
     }
 }

@@ -9,17 +9,17 @@ use {
 };
 
 #[derive(Default)]
-pub(crate) struct AssetResources {
+pub struct AssetResources {
     mesh: MeshCache,
     material: MaterialCache,
 }
 
 impl AssetResources {
-    pub fn gpu_mesh(&mut self, device: &Device, item: &RenderItem) -> Arc<GpuMesh> {
+    pub(crate) fn gpu_mesh(&mut self, device: &Device, item: &RenderItem) -> Arc<GpuMesh> {
         self.mesh.get_or_create(device, &item.mesh_handle())
     }
 
-    pub fn gpu_material(
+    pub(crate) fn gpu_material(
         &mut self,
         device: &Device,
         bind_group_layout: &BindGroupLayout,

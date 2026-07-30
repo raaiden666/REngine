@@ -1,8 +1,8 @@
 use winit::{dpi::PhysicalSize, window::WindowAttributes};
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub struct WindowConfig {
-    title: String,
+    title: &'static str,
     width: u32,
     height: u32,
     min_width: u32,
@@ -24,7 +24,7 @@ impl WindowConfig {
 impl Default for WindowConfig {
     fn default() -> Self {
         Self {
-            title: Self::DEFAULT_TITLE_STR.to_string(),
+            title: Self::DEFAULT_TITLE_STR,
             width: Self::DEFAULT_WIDTH,
             height: Self::DEFAULT_HEIGHT,
             min_width: Self::DEFAULT_MIN_WIDTH,
@@ -36,19 +36,8 @@ impl Default for WindowConfig {
 }
 
 impl WindowConfig {
-    pub fn to_attributes(&self) -> WindowAttributes {
-        WindowAttributes::default()
-            .with_title(&self.title)
-            .with_inner_size(PhysicalSize::new(self.width, self.height))
-            .with_min_inner_size(PhysicalSize::new(self.min_width, self.min_height))
-            .with_maximized(self.maximized)
-            .with_decorations(self.decorations)
-    }
-}
-
-impl WindowConfig {
-    pub fn with_title(mut self, title: impl Into<String>) -> Self {
-        self.title = title.into();
+    pub fn with_title(mut self, title: &'static str) -> Self {
+        self.title = title;
         self
     }
 
@@ -72,5 +61,16 @@ impl WindowConfig {
     pub fn with_decorations(mut self, decorations: bool) -> Self {
         self.decorations = decorations;
         self
+    }
+}
+
+impl From<&WindowConfig> for WindowAttributes {
+    fn from(value: &WindowConfig) -> Self {
+        WindowAttributes::default()
+            .with_title(value.title)
+            .with_inner_size(PhysicalSize::new(value.width, value.height))
+            .with_min_inner_size(PhysicalSize::new(value.min_width, value.min_height))
+            .with_maximized(value.maximized)
+            .with_decorations(value.decorations)
     }
 }

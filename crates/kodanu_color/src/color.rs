@@ -26,6 +26,7 @@ impl Color {
 }
 
 impl Color {
+    #[inline]
     pub const fn value(&self) -> [f32; 4] {
         self.value
     }

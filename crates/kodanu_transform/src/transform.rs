@@ -1,6 +1,6 @@
 use kodanu_math::{Mat4, Quat, Vec3};
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Copy)]
 pub struct Transform {
     position: Vec3,
     rotation: Quat,
@@ -98,17 +98,19 @@ impl Transform {
     }
 
     #[inline]
-    pub fn rotate(&mut self, rotation: Quat) {
-        self.rotation *= rotation;
+    pub fn translate_local(&mut self, translation: Vec3) {
+        self.position += self.rotation * translation
     }
 
     #[inline]
-    pub fn rotate_world(&mut self, rotation: Quat) {
-        self.rotation = rotation * self.rotation
+    pub fn rotate(&mut self, axis: Vec3, angle: f32) {
+        let rotation = Quat::from_axis_angle(axis.normalize(), angle);
+        self.rotation = rotation * self.rotation;
     }
 
     #[inline]
-    pub fn rotate_local(&mut self, rotation: Quat) {
+    pub fn rotate_local(&mut self, axis: Vec3, angle: f32) {
+        let rotation = Quat::from_axis_angle(axis.normalize(), angle);
         self.rotation *= rotation
     }
 }

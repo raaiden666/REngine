@@ -2,12 +2,11 @@ use crate::{CameraUniform, gpu::GraphicsDevice};
 
 use {bytemuck::bytes_of, kodanu_math::Mat4};
 
-use wgpu::util::{BufferInitDescriptor, DeviceExt};
-
 use wgpu::{
     BindGroup, BindGroupDescriptor, BindGroupEntry, BindGroupLayout, BindGroupLayoutDescriptor,
     BindGroupLayoutEntry, BindingType, Buffer, BufferBindingType, BufferUsages, Queue,
     ShaderStages,
+    util::{BufferInitDescriptor, DeviceExt},
 };
 
 #[derive(Debug)]

@@ -20,15 +20,15 @@ impl AppConfig {
         self.log_config = config;
     }
 
-    pub fn window_config(&self) -> &WindowConfig {
+    pub fn window(&self) -> &WindowConfig {
         &self.window_config
     }
 
-    pub fn renderer_config(&self) -> &RendererConfig {
+    pub fn renderer(&self) -> &RendererConfig {
         &self.renderer_config
     }
 
-    pub fn log_config(&self) -> &LogConfig {
+    pub fn log(&self) -> &LogConfig {
         &self.log_config
     }
 }

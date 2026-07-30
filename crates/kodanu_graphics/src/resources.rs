@@ -1,4 +1,6 @@
 mod asset_resources;
 mod frame_resources;
 
-pub(crate) use {asset_resources::AssetResources, frame_resources::FrameResources};
+pub use asset_resources::AssetResources;
+
+pub(crate) use frame_resources::FrameResources;

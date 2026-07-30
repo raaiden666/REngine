@@ -1,35 +1,37 @@
 use crate::RenderItem;
 
-use {kodanu_editor::Scene, kodanu_scene::MeshRenderer, kodanu_transform::Transform};
+use {
+    kodanu_ecs::Read, kodanu_ecs::WorldCell, kodanu_ecs::Write, kodanu_scene::MeshRenderer,
+    kodanu_transform::Transform,
+};
 
 #[derive(Default)]
 pub struct RenderQueue {
-    render_items: Vec<RenderItem>,
+    items: Vec<RenderItem>,
 }
 
 impl RenderQueue {
     pub fn with_capacity(capacity: usize) -> Self {
         Self {
-            render_items: Vec::with_capacity(capacity),
+            items: Vec::with_capacity(capacity),
         }
     }
+}
 
-    pub fn collect_render_items(&mut self, scene: &Scene) {
-        self.render_items.clear();
+impl RenderQueue {
+    #[inline]
+    pub fn update_queue_system(world: WorldCell) {
+        let queue = world.res::<Write<RenderQueue>>();
+        let query = world.view::<(Read<Transform>, Read<MeshRenderer>)>();
 
-        let Some(query) = scene.world().query::<(&Transform, &MeshRenderer)>() else {
-            return;
-        };
+        queue.items.clear();
 
         for (transform, mesh_renderer) in query {
-            let (mesh, material, model) = (
+            queue.items.push(RenderItem::new(
                 mesh_renderer.mesh_handle(),
                 mesh_renderer.material_handle(),
                 transform.matrix(),
-            );
-
-            self.render_items
-                .push(RenderItem::new(mesh, material, model));
+            ));
         }
     }
 }
@@ -37,6 +39,21 @@ impl RenderQueue {
 impl RenderQueue {
     #[inline]
     pub fn items(&self) -> &[RenderItem] {
-        &self.render_items
+        &self.items
+    }
+
+    #[inline]
+    pub fn len(&self) -> usize {
+        self.items.len()
+    }
+
+    #[inline]
+    pub fn is_empty(&self) -> bool {
+        self.items.is_empty()
+    }
+
+    #[inline]
+    pub fn clear(&mut self) {
+        self.items.clear();
     }
 }

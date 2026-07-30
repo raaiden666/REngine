@@ -1,3 +1,5 @@
+mod material;
 mod mesh;
+mod vertex;
 
-pub use mesh::{Material, Mesh, Vertex};
+pub use {material::Material, mesh::Mesh, vertex::Vertex};

@@ -1,17 +1,17 @@
-use crate::{AppConfig, AppRuntime, Editor};
+use crate::{AppBuilder, AppConfig, AppRuntime, Plugin};
 
 use {
-    kodanu_graphics::RendererConfig,
-    kodanu_input::KeyCode,
+    kodanu_camera::Camera,
+    kodanu_ecs::{Read, World, Write},
+    kodanu_editor::EditorView,
+    kodanu_graphics::{RenderQueue, RendererConfig},
+    kodanu_input::{ActionMap, Input, KeyCode, WinitHandler},
     kodanu_log::LogConfig,
-    kodanu_math::{DVec2, Mat4, UVec2},
-    kodanu_scheduler::{Scheduler, Stage, System, SystemContext},
+    kodanu_math::{DVec2, UVec2},
+    kodanu_scheduler::{Scheduler, Stage, System},
+    kodanu_time::Time,
     kodanu_window::WindowConfig,
     tracing_subscriber::fmt,
-};
-
-use kodanu_input::{
-    handle_cursor_move, handle_keyboard_input, handle_mouse_input, handle_mouse_wheel,
 };
 
 use winit::{
@@ -25,25 +25,36 @@ use winit::{
 #[derive(Default)]
 pub struct App {
     runtime: Option<AppRuntime>,
+    world: World,
     scheduler: Scheduler,
     config: AppConfig,
-    editor: Editor,
 }
 
 impl App {
-    pub fn run(&mut self) {
-        let log_config = self.config.log_config();
+    pub fn run(mut self) {
+        fmt().with_env_filter(self.config.log().env_filter()).init();
+
         let event_loop = EventLoop::new().expect("Failed to create event loop");
 
-        fmt().with_env_filter(log_config.env_filter()).init();
-
-        event_loop.run_app(self).expect("Failed to run app");
+        event_loop.run_app(&mut self).expect("Failed to run app");
     }
+}
 
-    pub fn add_system(&mut self, stage: Stage, system: System) {
-        self.scheduler.add(stage, system);
+impl App {
+    pub fn add_plugin<P>(&mut self, plugin: P) -> &mut Self
+    where
+        P: Plugin,
+    {
+        plugin.build(&mut AppBuilder::new(
+            &mut self.scheduler,
+            &mut self.world.cell(),
+        ));
+
+        self
     }
+}
 
+impl App {
     pub fn with_window_config(mut self, config: WindowConfig) -> Self {
         self.config.set_window_config(config);
         self
@@ -60,6 +71,38 @@ impl App {
     }
 }
 
+impl App {
+    pub fn add_startup_system(mut self, system: System) -> Self {
+        self.scheduler.add(Stage::Startup, system);
+        self
+    }
+
+    pub fn add_pre_update_system(mut self, system: System) -> Self {
+        self.scheduler.add(Stage::PreUpdate, system);
+        self
+    }
+
+    pub fn add_update_system(mut self, system: System) -> Self {
+        self.scheduler.add(Stage::Update, system);
+        self
+    }
+
+    pub fn add_late_update_system(mut self, system: System) -> Self {
+        self.scheduler.add(Stage::LateUpdate, system);
+        self
+    }
+
+    pub fn add_end_frame_system(mut self, system: System) -> Self {
+        self.scheduler.add(Stage::EndFrame, system);
+        self
+    }
+
+    pub fn add_render_system(mut self, system: System) -> Self {
+        self.scheduler.add(Stage::Render, system);
+        self
+    }
+}
+
 impl ApplicationHandler for App {
     fn resumed(&mut self, event_loop: &ActiveEventLoop) {
         if self.runtime.is_some() {
@@ -69,7 +112,24 @@ impl ApplicationHandler for App {
         self.runtime =
             Some(AppRuntime::new(event_loop, &self.config).expect("Failed to create app"));
 
-        self.run_stage(Stage::Startup);
+        self.world.insert_resource(Input::default());
+        self.world.insert_resource(ActionMap::default());
+        self.scheduler
+            .add(Stage::EndFrame, Input::update_end_frame_system);
+
+        self.world.insert_resource(Time::default());
+        self.scheduler
+            .add(Stage::PreUpdate, Time::update_time_system);
+
+        self.world.insert_resource(RenderQueue::default());
+        self.scheduler
+            .add(Stage::Render, RenderQueue::update_queue_system);
+
+        self.world.insert_resource(EditorView::default());
+        self.scheduler
+            .add(Stage::Render, EditorView::update_view_system);
+
+        self.scheduler.run(Stage::Startup, self.world.cell());
     }
 
     fn window_event(
@@ -88,75 +148,59 @@ impl ApplicationHandler for App {
 }
 
 impl App {
-    fn run_stage(&mut self, stage: Stage) {
-        let runtime = self.runtime.as_mut().unwrap();
-
-        let mut context = SystemContext {
-            scene: self.editor.scene_mut(),
-            time: runtime.engine().time(),
-            input: runtime.engine().input(),
-            action_map: runtime.engine().action_map(),
-        };
-
-        self.scheduler.run(stage, &mut context);
-    }
-
     fn handle_redraw(&mut self, event_loop: &ActiveEventLoop) {
-        {
-            let engine = self.runtime.as_mut().unwrap().engine_mut();
+        let (world, runtime) = (self.world.cell(), unsafe {
+            self.runtime.as_mut().unwrap_unchecked()
+        });
 
-            engine.time_update();
+        let (input, editor, queue) = (
+            world.res::<Read<Input>>(),
+            world.res::<Read<EditorView>>(),
+            world.res::<Read<RenderQueue>>(),
+        );
 
-            if engine.input().key_just_pressed(KeyCode::Escape) {
-                event_loop.exit();
-            }
-
-            engine.begin_frame();
+        if input.key_just_pressed(KeyCode::Escape) {
+            event_loop.exit();
         }
 
-        self.run_stage(Stage::PreUpdate);
-        self.run_stage(Stage::Update);
-        self.run_stage(Stage::LateUpdate);
+        self.scheduler.run(Stage::PreUpdate, world);
+        self.scheduler.run(Stage::Update, world);
+        self.scheduler.run(Stage::LateUpdate, world);
+        self.scheduler.run(Stage::EndFrame, world);
+        self.scheduler.run(Stage::Render, world);
 
-        let runtime = self.runtime.as_mut().unwrap();
-        let engine = runtime.engine_mut();
+        runtime.render(editor.view_projection(), queue.items());
 
-        if let Some(view_projection) = self.editor.scene().view_projection() {
-            engine.render(view_projection, self.editor.scene());
-        } else {
-            engine.render(Mat4::ZERO, self.editor.scene());
-        }
-
-        runtime.window_mut().request_redraw();
+        runtime.request_redraw();
     }
 
     fn handle_resize(&mut self, size: PhysicalSize<u32>) {
-        let engine = self.runtime.as_mut().unwrap().engine_mut();
+        let (world, runtime) = (self.world.cell(), unsafe {
+            self.runtime.as_mut().unwrap_unchecked()
+        });
 
-        engine
-            .renderer_mut()
-            .surface_resize(UVec2::new(size.width, size.height));
+        runtime.surface_resize(UVec2::new(size.width, size.height));
 
-        self.editor
-            .scene_mut()
-            .set_viewport_size(size.width, size.height);
+        for camera in world.view::<Write<Camera>>() {
+            camera.set_viewport_size(size.width, size.height);
+        }
     }
 
     fn handle_input(&mut self, event: WindowEvent) {
-        let engine = self.runtime.as_mut().unwrap().engine_mut();
+        let input = self.world.res::<Write<Input>>();
 
         match event {
             WindowEvent::KeyboardInput { event, .. } => {
-                handle_keyboard_input(engine.input_mut(), &event);
+                WinitHandler::handle_keyboard_input(input, &event);
             }
             WindowEvent::MouseInput { state, button, .. } => {
-                handle_mouse_input(engine.input_mut(), state, button);
+                WinitHandler::handle_mouse_input(input, state, button);
             }
             WindowEvent::CursorMoved { position, .. } => {
-                handle_cursor_move(engine.input_mut(), DVec2::new(position.x, position.y));
+                WinitHandler::handle_cursor_move(input, DVec2::new(position.x, position.y));
             }
             WindowEvent::MouseWheel { delta, .. } => {
-                handle_mouse_wheel(engine.input_mut(), delta);
+                WinitHandler::handle_mouse_wheel(input, delta);
             }
             _ => {}
         }

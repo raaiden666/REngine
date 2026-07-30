@@ -1,9 +1,9 @@
+use crate::gpu::GraphicsDevice;
+
 use wgpu::{
     BindGroupLayout, BindGroupLayoutDescriptor, BindGroupLayoutEntry, BindingType,
     BufferBindingType, ShaderStages,
 };
-
-use crate::gpu::GraphicsDevice;
 
 #[derive(Debug)]
 pub(crate) struct MaterialLayout {

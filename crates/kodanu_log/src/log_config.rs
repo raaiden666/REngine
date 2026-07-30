@@ -9,16 +9,8 @@ pub struct LogConfig {
 
 impl LogConfig {
     pub fn with_level(self, level: Level) -> Self {
-        let level = match level {
-            Level::Trace => "trace",
-            Level::Debug => "debug",
-            Level::Info => "info",
-            Level::Warn => "warn",
-            Level::Error => "error",
-        };
-
         Self {
-            filter: EnvFilter::new(level),
+            filter: EnvFilter::new(level.as_str()),
         }
     }
 

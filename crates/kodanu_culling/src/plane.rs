@@ -15,13 +15,17 @@ impl Plane {
 }
 
 impl Plane {
+    #[inline]
     pub fn from_vec4(value: Vec4) -> Self {
         Self::new(value.truncate(), value.w)
     }
+
+    #[inline]
     pub fn signed_distance(&self, point: Vec3) -> f32 {
         self.normal.dot(point) + self.distance
     }
 
+    #[inline]
     pub fn normilize(&mut self) {
         let length = self.normal.length();
 
@@ -29,6 +33,7 @@ impl Plane {
         self.distance /= length;
     }
 
+    #[inline]
     pub fn contains_sphere(&self, sphere: &BoundingSphere) -> bool {
         self.signed_distance(sphere.center()) >= -sphere.radius()
     }

@@ -13,6 +13,7 @@ impl BoundingSphere {
 }
 
 impl BoundingSphere {
+    #[inline]
     pub fn transformed(&self, transform: &Transform) -> Self {
         let max_scale = transform.scale().max_element();
 

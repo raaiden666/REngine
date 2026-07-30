@@ -3,6 +3,9 @@ name = "kodanu"
 version = "0.1.0"
 edition = "2024"
 
+[lib]
+path = "src/_lib.rs"
+
 [dependencies]
 kodanu_app = { workspace = true }
 kodanu_assets = { workspace = true }
@@ -18,3 +21,5 @@ kodanu_scene = { workspace = true }
 kodanu_transform = { workspace = true }
 kodanu_window = { workspace = true }
 kodanu_scheduler = { workspace = true }
+kodanu_time = { workspace = true }
+kodanu_systems = { workspace = true }

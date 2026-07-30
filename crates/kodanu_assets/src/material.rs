@@ -1,6 +1,6 @@
 use kodanu_color::Color;
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub struct Material {
     color: Color,
 }

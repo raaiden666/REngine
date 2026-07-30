@@ -1,5 +1,9 @@
-use std::time::{Duration, Instant};
+use {
+    kodanu_ecs::WorldCell,
+    std::time::{Duration, Instant},
+};
 
+#[derive(Debug, Clone, Copy)]
 pub struct Time {
     startup: Instant,
     last: Instant,
@@ -24,16 +28,20 @@ impl Default for Time {
 
 impl Time {
     #[inline]
-    pub fn update(&mut self) {
+    pub fn update_time_system(world: WorldCell) {
+        let time = world.expect_resource_mut::<Time>();
+
         let now = Instant::now();
-        let delta = now.duration_since(self.last);
+        let delta = now.duration_since(time.last);
 
-        self.delta = delta.min(self.max_delta);
-        self.elapsed = now.duration_since(self.startup);
+        time.delta = delta.min(time.max_delta);
+        time.elapsed = now.duration_since(time.startup);
 
-        self.last = now;
+        time.last = now;
     }
+}
 
+impl Time {
     #[inline]
     pub fn delta(&self) -> f32 {
         self.delta.as_secs_f32()

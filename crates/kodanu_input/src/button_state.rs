@@ -1,4 +1,6 @@
-use std::{collections::HashSet, hash::Hash};
+#![allow(dead_code)]
+
+use {hashbrown::HashSet, std::hash::Hash};
 
 pub(crate) struct ButtonState<T>
 where
@@ -15,9 +17,22 @@ where
 {
     fn default() -> Self {
         Self {
-            pressed: HashSet::with_capacity(128),
-            just_pressed: HashSet::with_capacity(128),
-            just_released: HashSet::with_capacity(128),
+            pressed: HashSet::default(),
+            just_pressed: HashSet::default(),
+            just_released: HashSet::default(),
+        }
+    }
+}
+
+impl<T> ButtonState<T>
+where
+    T: Eq + Hash + Copy,
+{
+    pub fn with_capacity(capacity: usize) -> Self {
+        Self {
+            pressed: HashSet::with_capacity(capacity),
+            just_pressed: HashSet::with_capacity(capacity),
+            just_released: HashSet::with_capacity(capacity),
         }
     }
 }
@@ -27,7 +42,7 @@ where
     T: Eq + Hash + Copy,
 {
     #[inline]
-    pub fn begin_frame(&mut self) {
+    pub fn end_frame(&mut self) {
         self.just_pressed.clear();
         self.just_released.clear();
     }

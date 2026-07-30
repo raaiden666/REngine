@@ -1,9 +1,9 @@
 use crate::{
-    RendererConfig, fragment_shader,
+    RendererConfig,
     gpu::{GraphicsDevice, RenderSurface, RenderTexture},
-    pipeline::vertex_layout::vertex_layout,
+    pipeline::vertex_layout::VertexLayout,
     resources::FrameResources,
-    vertex_shader,
+    shader::ShaderStorage,
 };
 
 use wgpu::{
@@ -40,13 +40,13 @@ impl GraphicsPipeline {
                 label: Some("Render Pipeline"),
                 layout: Some(&layout),
                 vertex: VertexState {
-                    module: &vertex_shader(graphics_device.device()),
+                    module: &ShaderStorage::vertex_shader(graphics_device.device()),
                     entry_point: Some("vs_main"),
-                    buffers: &[Some(vertex_layout())],
+                    buffers: &[Some(VertexLayout::get())],
                     compilation_options: PipelineCompilationOptions::default(),
                 },
                 fragment: Some(FragmentState {
-                    module: &fragment_shader(graphics_device.device()),
+                    module: &ShaderStorage::fragment_shader(graphics_device.device()),
                     entry_point: Some("fs_main"),
                     targets: &[Some(render_surface.config().format.into())],
                     compilation_options: PipelineCompilationOptions::default(),

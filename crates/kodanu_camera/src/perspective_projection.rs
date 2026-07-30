@@ -1,6 +1,6 @@
 use kodanu_math::{Mat4, perspective};
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub struct PerspectiveProjection {
     fov: f32,
     aspect_ratio: f32,
