@@ -1,3 +1,3 @@
-mod setup;
+mod wgpu_init;
 
-pub(crate) use setup::{create_device_and_surface, create_render_surface};
+pub(crate) use wgpu_init::WgpuInit;

@@ -1,15 +1,15 @@
 use crate::{
     AssetResources, RenderItem, RendererConfig, SampleCount,
-    gpu::{GraphicsDevice, RenderSurface, RenderTexture, SurfaceFrame},
+    gpu::{GraphicsDevice, RenderSurface, RenderTexture},
     pipeline::GraphicsPipeline,
     resources::FrameResources,
-    setup::{create_device_and_surface, create_render_surface},
+    setup::WgpuInit,
 };
 
 use wgpu::{
-    Color, CommandEncoder, IndexFormat, LoadOp, Operations, RenderPass, RenderPassColorAttachment,
-    RenderPassDepthStencilAttachment, RenderPassDescriptor, StoreOp, SurfaceTexture, TextureView,
-    TextureViewDescriptor,
+    Color, CommandEncoder, CurrentSurfaceTexture, IndexFormat, LoadOp, Operations, RenderPass,
+    RenderPassColorAttachment, RenderPassDepthStencilAttachment, RenderPassDescriptor, StoreOp,
+    SurfaceTexture, TextureView, TextureViewDescriptor,
 };
 
 use {kodanu_math::Mat4, kodanu_math::UVec2, kodanu_window::Window, pollster::block_on};
@@ -28,9 +28,10 @@ pub struct Renderer {
 
 impl Renderer {
     pub fn new(window: &Window, config: &RendererConfig) -> Self {
-        let (graphics_device, surface) = block_on(create_device_and_surface(window, config));
+        let (graphics_device, surface) =
+            block_on(WgpuInit::create_device_and_surface(window, config));
 
-        let render_surface = create_render_surface(window, &graphics_device, surface);
+        let render_surface = WgpuInit::create_render_surface(window, &graphics_device, surface);
 
         let frame_resources = FrameResources::new(&graphics_device);
 
@@ -71,18 +72,18 @@ impl Renderer {
 impl Renderer {
     pub fn render(&mut self, view_projection: Mat4, items: &[RenderItem]) {
         match self.render_surface.acquire_frame() {
-            SurfaceFrame::Ready(frame) => {
+            CurrentSurfaceTexture::Success(frame) => {
                 self.call_draw(frame, view_projection, items);
             }
-            SurfaceFrame::Suboptimal(frame) => {
+            CurrentSurfaceTexture::Suboptimal(frame) => {
                 self.call_draw(frame, view_projection, items);
 
                 self.surface_resize(self.surface_size());
             }
-            SurfaceFrame::Outdated | SurfaceFrame::Lost => {
+            CurrentSurfaceTexture::Outdated | CurrentSurfaceTexture::Lost => {
                 self.surface_resize(self.surface_size());
             }
-            SurfaceFrame::Validation => {
+            CurrentSurfaceTexture::Validation => {
                 panic!("Wgpu validation error");
             }
             _ => {}
@@ -177,10 +178,6 @@ impl Renderer {
 }
 
 impl Renderer {
-    pub fn reconfigure_surface(&mut self) {
-        self.render_surface.configure(self.graphics_device.device());
-    }
-
     pub fn surface_size(&self) -> UVec2 {
         self.render_surface.size()
     }

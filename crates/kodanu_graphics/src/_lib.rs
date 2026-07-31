@@ -5,13 +5,13 @@ mod material;
 mod mesh;
 mod model;
 mod pipeline;
-mod renderer;
+mod render;
 mod resources;
 mod setup;
 mod shader;
 
 pub use config::{Backend, RendererConfig, SampleCount};
-pub use renderer::{FrameStatus, RenderItem, RenderQueue, Renderer};
+pub use render::{RenderItem, RenderQueue, Renderer};
 pub use resources::AssetResources;
 
 pub(crate) use camera::{CameraRenderer, CameraUniform};

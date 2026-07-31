@@ -1,5 +1,3 @@
-use crate::gpu::SurfaceFrame;
-
 use wgpu::{CurrentSurfaceTexture, Device, Surface, SurfaceConfiguration};
 
 use kodanu_math::UVec2;
@@ -30,10 +28,6 @@ impl RenderSurface {
         self.size
     }
 
-    pub fn configure(&self, device: &Device) {
-        self.surface.configure(device, &self.config);
-    }
-
     pub fn resize(&mut self, device: &Device, size: UVec2) {
         if size.x == 0 || size.y == 0 {
             return;
@@ -46,15 +40,7 @@ impl RenderSurface {
         self.surface.configure(device, &self.config);
     }
 
-    pub fn acquire_frame(&self) -> SurfaceFrame {
-        match self.surface.get_current_texture() {
-            CurrentSurfaceTexture::Success(frame) => SurfaceFrame::Ready(frame),
-            CurrentSurfaceTexture::Suboptimal(frame) => SurfaceFrame::Suboptimal(frame),
-            CurrentSurfaceTexture::Timeout => SurfaceFrame::Timeout,
-            CurrentSurfaceTexture::Occluded => SurfaceFrame::Occluded,
-            CurrentSurfaceTexture::Outdated => SurfaceFrame::Outdated,
-            CurrentSurfaceTexture::Lost => SurfaceFrame::Lost,
-            CurrentSurfaceTexture::Validation => SurfaceFrame::Validation,
-        }
+    pub fn acquire_frame(&self) -> CurrentSurfaceTexture {
+        self.surface.get_current_texture()
     }
 }
