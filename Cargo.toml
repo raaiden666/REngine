@@ -18,7 +18,8 @@ members = [
     "crates/kodanu",
     "crates/kodanu_culling",
     "crates/kodanu_scheduler",
-     "crates/kodanu_systems",
+    "crates/kodanu_systems",
+    "crates/kodanu_physics",
 ]
 
 resolver = "3"
@@ -27,6 +28,8 @@ resolver = "3"
 winit = { version = "0.30.13" }
 wgpu = { version = "30.0.0" }
 glam = { version = "0.33.1"}
+
+rapier3d = { version = "0.34.0", features = ["parallel", "simd-stable", "f32"]}
 
 anyhow = { version = "1.0.103" }
 bytemuck = { version = "1.25.0", features = ["derive"] }
@@ -56,3 +59,4 @@ kodanu = { package = "kodanu", path = "crates/kodanu" }
 kodanu_culling = { package = "kodanu_culling", path = "crates/kodanu_culling" }
 kodanu_scheduler = { package = "kodanu_scheduler", path = "crates/kodanu_scheduler" }
 kodanu_systems = { package = "kodanu_systems", path = "crates/kodanu_systems" }
+kodanu_physics = { package = "kodanu_physics", path = "crates/kodanu_physics" }

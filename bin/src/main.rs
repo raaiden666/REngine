@@ -16,7 +16,10 @@ fn main() {
         .with_renderer_config(renderer_config)
         .with_log_config(log_config);
 
-    app.add_plugin(DemoCameraPlugin).add_plugin(DemoMeshPlugin);
+    app.add_plugin(DemoCameraPlugin)
+        .add_plugin(DemoMeshPlugin)
+        .add_plugin(DemoTestPhysicsPlugin)
+        .add_plugin(PhysicsPlugin);
 
     app.run();
 }

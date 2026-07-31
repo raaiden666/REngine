@@ -23,3 +23,10 @@ kodanu_window = { workspace = true }
 kodanu_scheduler = { workspace = true }
 kodanu_time = { workspace = true }
 kodanu_systems = { workspace = true }
+
+kodanu_physics = { workspace = true, optional = true }
+
+[features]
+default = ["physics"]
+
+physics = ["dep:kodanu_physics"]

@@ -1,0 +1,19 @@
+[package]
+name = "kodanu_physics"
+version = "0.1.0"
+edition = "2024"
+
+[lib]
+path = "src/_lib.rs"
+
+[dependencies]
+rapier3d = { workspace = true }
+
+kodanu_math = { workspace = true }
+kodanu_ecs = { workspace = true }
+kodanu_app = { workspace = true }
+kodanu_scheduler = { workspace = true }
+kodanu_transform = { workspace = true }
+kodanu_scene = { workspace = true }
+kodanu_assets = { workspace = true }
+kodanu_color = { workspace = true }
