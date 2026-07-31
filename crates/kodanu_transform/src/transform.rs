@@ -54,6 +54,12 @@ impl Transform {
     }
 
     #[inline]
+    pub fn set_position_and_rotation(&mut self, position: Vec3, rotation: Quat) {
+        self.position = position;
+        self.rotation = rotation;
+    }
+
+    #[inline]
     pub fn set_scale(&mut self, scale: Vec3) {
         self.scale = scale;
     }
