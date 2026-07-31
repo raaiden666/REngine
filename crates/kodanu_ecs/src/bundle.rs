@@ -33,3 +33,21 @@ where
         world.insert_component(entity, c);
     }
 }
+
+impl<A, B, C, D> Bundle for (A, B, C, D)
+where
+    A: Component,
+    B: Component,
+    C: Component,
+    D: Component,
+{
+    #[inline]
+    fn insert(self, entity: Entity, world: &mut World) {
+        let (a, b, c, d) = self;
+
+        world.insert_component(entity, a);
+        world.insert_component(entity, b);
+        world.insert_component(entity, c);
+        world.insert_component(entity, d);
+    }
+}
