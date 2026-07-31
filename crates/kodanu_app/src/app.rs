@@ -77,6 +77,21 @@ impl App {
         self
     }
 
+    pub fn add_pre_fixed_update_system(mut self, system: System) -> Self {
+        self.scheduler.add(Stage::PreFixedUpdate, system);
+        self
+    }
+
+    pub fn add_fixed_update_system(mut self, system: System) -> Self {
+        self.scheduler.add(Stage::FixedUpdate, system);
+        self
+    }
+
+    pub fn add_post_fixed_update_system(mut self, system: System) -> Self {
+        self.scheduler.add(Stage::PostFixedUpdate, system);
+        self
+    }
+
     pub fn add_pre_update_system(mut self, system: System) -> Self {
         self.scheduler.add(Stage::PreUpdate, system);
         self
@@ -163,9 +178,14 @@ impl App {
             event_loop.exit();
         }
 
+        self.scheduler.run(Stage::PreFixedUpdate, world);
+        self.scheduler.run(Stage::FixedUpdate, world);
+        self.scheduler.run(Stage::PostFixedUpdate, world);
+
         self.scheduler.run(Stage::PreUpdate, world);
         self.scheduler.run(Stage::Update, world);
         self.scheduler.run(Stage::LateUpdate, world);
+
         self.scheduler.run(Stage::EndFrame, world);
         self.scheduler.run(Stage::Render, world);
 
