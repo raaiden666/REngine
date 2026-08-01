@@ -818,7 +818,6 @@ dependencies = [
  "kodanu_math",
  "kodanu_physics",
  "kodanu_plugins",
- "kodanu_scene",
  "kodanu_scheduler",
  "kodanu_time",
  "kodanu_transform",
@@ -898,10 +897,10 @@ dependencies = [
  "bitflags 2.13.1",
  "bytemuck",
  "kodanu_assets",
+ "kodanu_color",
  "kodanu_ecs",
  "kodanu_editor",
  "kodanu_math",
- "kodanu_scene",
  "kodanu_transform",
  "kodanu_window",
  "pollster",
@@ -940,8 +939,8 @@ dependencies = [
  "kodanu_assets",
  "kodanu_color",
  "kodanu_ecs",
+ "kodanu_graphics",
  "kodanu_math",
- "kodanu_scene",
  "kodanu_scheduler",
  "kodanu_transform",
  "rapier3d",
@@ -956,20 +955,12 @@ dependencies = [
  "kodanu_camera",
  "kodanu_color",
  "kodanu_ecs",
+ "kodanu_graphics",
  "kodanu_input",
  "kodanu_math",
- "kodanu_scene",
  "kodanu_scheduler",
  "kodanu_time",
  "kodanu_transform",
-]
-
-[[package]]
-name = "kodanu_scene"
-version = "0.1.0"
-dependencies = [
- "kodanu_assets",
- "kodanu_color",
 ]
 
 [[package]]

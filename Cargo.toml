@@ -3,7 +3,6 @@ members = [
     "bin",
     "crates/kodanu_app",
     "crates/kodanu_assets",
-    "crates/kodanu_scene",
     "crates/kodanu_ecs",
     "crates/kodanu_editor",
     "crates/kodanu_graphics",
@@ -41,11 +40,11 @@ tracing-subscriber = { version = "0.3.23", features = ["env-filter"] }
 
 hashbrown = { version = "0.17.1" }
 
+kodanu = { package = "kodanu", path = "crates/kodanu" }
 kodanu_app = { package = "kodanu_app", path = "crates/kodanu_app" }
 kodanu_graphics = { package = "kodanu_graphics", path = "crates/kodanu_graphics" }
 kodanu_input = { package = "kodanu_input", path = "crates/kodanu_input" }
 kodanu_math = { package = "kodanu_math", path = "crates/kodanu_math" }
-kodanu_scene = { package = "kodanu_scene", path = "crates/kodanu_scene" }
 kodanu_time = { package = "kodanu_time", path = "crates/kodanu_time" }
 kodanu_window = { package = "kodanu_window", path = "crates/kodanu_window" }
 kodanu_editor = { package = "kodanu_editor", path = "crates/kodanu_editor" }
@@ -55,7 +54,6 @@ kodanu_transform = { package = "kodanu_transform", path = "crates/kodanu_transfo
 kodanu_camera = { package = "kodanu_camera", path = "crates/kodanu_camera" }
 kodanu_color = { package = "kodanu_color", path = "crates/kodanu_color" }
 kodanu_log = { package = "kodanu_log", path = "crates/kodanu_log" }
-kodanu = { package = "kodanu", path = "crates/kodanu" }
 kodanu_culling = { package = "kodanu_culling", path = "crates/kodanu_culling" }
 kodanu_scheduler = { package = "kodanu_scheduler", path = "crates/kodanu_scheduler" }
 kodanu_plugins = { package = "kodanu_plugins", path = "crates/kodanu_plugins" }

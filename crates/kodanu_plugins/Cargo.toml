@@ -15,6 +15,6 @@ kodanu_math = { workspace = true }
 kodanu_transform = { workspace = true }
 kodanu_input = { workspace = true }
 kodanu_time = { workspace = true }
-kodanu_scene = { workspace = true }
 kodanu_assets = { workspace = true }
 kodanu_color = { workspace = true }
+kodanu_graphics = { workspace = true }

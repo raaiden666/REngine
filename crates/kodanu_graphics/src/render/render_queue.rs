@@ -1,9 +1,6 @@
-use crate::RenderItem;
+use crate::{MeshRenderer, RenderItem};
 
-use {
-    kodanu_ecs::Read, kodanu_ecs::WorldCell, kodanu_ecs::Write, kodanu_scene::MeshRenderer,
-    kodanu_transform::Transform,
-};
+use {kodanu_ecs::Read, kodanu_ecs::WorldCell, kodanu_ecs::Write, kodanu_transform::Transform};
 
 #[derive(Default)]
 pub struct RenderQueue {

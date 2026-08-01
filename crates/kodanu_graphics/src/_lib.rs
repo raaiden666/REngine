@@ -1,4 +1,5 @@
 mod camera;
+mod components;
 mod config;
 mod gpu;
 mod material;
@@ -10,6 +11,7 @@ mod resources;
 mod setup;
 mod shader;
 
+pub use components::MeshRenderer;
 pub use config::{Backend, RendererConfig, SampleCount};
 pub use render::{RenderItem, RenderQueue, Renderer};
 pub use resources::AssetResources;

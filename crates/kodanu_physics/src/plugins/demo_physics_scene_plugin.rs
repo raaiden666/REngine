@@ -5,8 +5,8 @@ use {
     kodanu_assets::{Material, Mesh},
     kodanu_color::Color,
     kodanu_ecs::WorldCell,
+    kodanu_graphics::MeshRenderer,
     kodanu_math::Vec3,
-    kodanu_scene::MeshRenderer,
     kodanu_scheduler::Stage,
     kodanu_transform::Transform,
 };
