@@ -1,9 +1,9 @@
 use {
-    kodanu_app::{AppBuilder, Plugin},
     kodanu_camera::Camera,
     kodanu_ecs::{Read, WorldCell, Write},
     kodanu_input::{ActionMap, Axis, Input},
     kodanu_math::Vec3,
+    kodanu_plugin::{Plugin, PluginRegistry},
     kodanu_scheduler::Stage,
     kodanu_time::Time,
     kodanu_transform::Transform,
@@ -12,7 +12,7 @@ use {
 pub struct FreeCameraPlugin;
 
 impl Plugin for FreeCameraPlugin {
-    fn build(&self, app: &mut AppBuilder) {
+    fn build(&self, app: &mut PluginRegistry) {
         app.add_system(Stage::Startup, test_camera_system);
         app.add_system(Stage::LateUpdate, perspective_camera_system);
     }

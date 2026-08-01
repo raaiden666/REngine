@@ -1,8 +1,8 @@
 use {crate::prelude::*, crate::rapier3d::*};
 
 use {
-    kodanu_app::{AppBuilder, Plugin},
     kodanu_ecs::{Read, WorldCell, Write},
+    kodanu_plugin::{Plugin, PluginRegistry},
     kodanu_scheduler::Stage,
     kodanu_transform::Transform,
 };
@@ -10,7 +10,7 @@ use {
 pub struct PhysicsPlugin;
 
 impl Plugin for PhysicsPlugin {
-    fn build(&self, app: &mut AppBuilder) {
+    fn build(&self, app: &mut PluginRegistry) {
         app.insert_resource(PhysicsWorld::default());
 
         app.add_system(Stage::PreFixedUpdate, spawn_rigid_bodies_system);

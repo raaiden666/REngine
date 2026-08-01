@@ -3,18 +3,18 @@ use {
     kodanu_scheduler::{Scheduler, Stage, System},
 };
 
-pub struct AppBuilder<'a> {
+pub struct PluginRegistry<'a> {
     scheduler: &'a mut Scheduler,
     world: &'a mut WorldCell<'a>,
 }
 
-impl<'a> AppBuilder<'a> {
+impl<'a> PluginRegistry<'a> {
     pub fn new(scheduler: &'a mut Scheduler, world: &'a mut WorldCell<'a>) -> Self {
         Self { scheduler, world }
     }
 }
 
-impl AppBuilder<'_> {
+impl PluginRegistry<'_> {
     pub fn add_system(&mut self, stage: Stage, system: System) {
         self.scheduler.add(stage, system);
     }

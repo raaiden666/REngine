@@ -1,12 +1,12 @@
 use crate::prelude::{Collider, RigidBody};
 
 use {
-    kodanu_app::Plugin,
     kodanu_assets::{Material, Mesh},
     kodanu_color::Color,
     kodanu_ecs::WorldCell,
     kodanu_graphics::MeshRenderer,
     kodanu_math::Vec3,
+    kodanu_plugin::{Plugin, PluginRegistry},
     kodanu_scheduler::Stage,
     kodanu_transform::Transform,
 };
@@ -14,7 +14,7 @@ use {
 pub struct DemoPhysicsScenePlugin;
 
 impl Plugin for DemoPhysicsScenePlugin {
-    fn build(&self, app: &mut kodanu_app::AppBuilder) {
+    fn build(&self, app: &mut PluginRegistry) {
         app.add_system(Stage::Startup, spawn_mesh_physics_system);
     }
 }

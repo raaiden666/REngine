@@ -19,6 +19,7 @@ members = [
     "crates/kodanu_scheduler",
     "crates/kodanu_plugins",
     "crates/kodanu_physics",
+    "crates/kodanu_plugin",
 ]
 
 resolver = "3"
@@ -58,3 +59,4 @@ kodanu_culling = { package = "kodanu_culling", path = "crates/kodanu_culling" }
 kodanu_scheduler = { package = "kodanu_scheduler", path = "crates/kodanu_scheduler" }
 kodanu_plugins = { package = "kodanu_plugins", path = "crates/kodanu_plugins" }
 kodanu_physics = { package = "kodanu_physics", path = "crates/kodanu_physics" }
+kodanu_plugin = { package = "kodanu_plugin", path = "crates/kodanu_plugin" }

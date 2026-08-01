@@ -1,10 +1,11 @@
 use {
-    kodanu_app::Plugin,
     kodanu_assets::{Material, Mesh},
     kodanu_color::Color,
     kodanu_ecs::WorldCell,
     kodanu_graphics::MeshRenderer,
     kodanu_math::Vec3,
+    kodanu_plugin::Plugin,
+    kodanu_plugin::PluginRegistry,
     kodanu_scheduler::Stage,
     kodanu_transform::Transform,
 };
@@ -12,7 +13,7 @@ use {
 pub struct DemoMeshScenePlugin;
 
 impl Plugin for DemoMeshScenePlugin {
-    fn build(&self, app: &mut kodanu_app::AppBuilder) {
+    fn build(&self, app: &mut PluginRegistry) {
         app.add_system(Stage::Startup, test_mesh_system);
     }
 }

@@ -1,4 +1,4 @@
-use crate::{AppBuilder, AppConfig, AppRuntime, Plugin};
+use crate::{AppConfig, AppRuntime};
 
 use {
     kodanu_camera::Camera,
@@ -14,6 +14,7 @@ use {
     tracing_subscriber::fmt,
 };
 
+use kodanu_plugin::{Plugin, PluginRegistry};
 use winit::{
     application::ApplicationHandler,
     dpi::PhysicalSize,
@@ -45,7 +46,7 @@ impl App {
     where
         P: Plugin,
     {
-        plugin.build(&mut AppBuilder::new(
+        plugin.build(&mut PluginRegistry::new(
             &mut self.scheduler,
             &mut self.world.cell(),
         ));

@@ -817,6 +817,7 @@ dependencies = [
  "kodanu_log",
  "kodanu_math",
  "kodanu_physics",
+ "kodanu_plugin",
  "kodanu_plugins",
  "kodanu_scheduler",
  "kodanu_time",
@@ -836,6 +837,7 @@ dependencies = [
  "kodanu_input",
  "kodanu_log",
  "kodanu_math",
+ "kodanu_plugin",
  "kodanu_scheduler",
  "kodanu_time",
  "kodanu_window",
@@ -935,22 +937,29 @@ dependencies = [
 name = "kodanu_physics"
 version = "0.1.0"
 dependencies = [
- "kodanu_app",
  "kodanu_assets",
  "kodanu_color",
  "kodanu_ecs",
  "kodanu_graphics",
  "kodanu_math",
+ "kodanu_plugin",
  "kodanu_scheduler",
  "kodanu_transform",
  "rapier3d",
 ]
 
 [[package]]
+name = "kodanu_plugin"
+version = "0.1.0"
+dependencies = [
+ "kodanu_ecs",
+ "kodanu_scheduler",
+]
+
+[[package]]
 name = "kodanu_plugins"
 version = "0.1.0"
 dependencies = [
- "kodanu_app",
  "kodanu_assets",
  "kodanu_camera",
  "kodanu_color",
@@ -958,6 +967,7 @@ dependencies = [
  "kodanu_graphics",
  "kodanu_input",
  "kodanu_math",
+ "kodanu_plugin",
  "kodanu_scheduler",
  "kodanu_time",
  "kodanu_transform",
