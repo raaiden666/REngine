@@ -9,9 +9,9 @@ use {
     kodanu_transform::Transform,
 };
 
-pub struct DemoMeshPlugin;
+pub struct DemoMeshScenePlugin;
 
-impl Plugin for DemoMeshPlugin {
+impl Plugin for DemoMeshScenePlugin {
     fn build(&self, app: &mut kodanu_app::AppBuilder) {
         app.add_system(Stage::Startup, test_mesh_system);
     }

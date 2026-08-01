@@ -18,7 +18,7 @@ pub mod prelude {
     #[cfg(feature = "physics")]
     pub use kodanu_physics::prelude::*;
     #[cfg(feature = "plugins")]
-    pub use kodanu_plugins::{DemoCameraPlugin, DemoMeshPlugin};
+    pub use kodanu_plugins::{DemoMeshScenePlugin, FreeCameraPlugin};
 }
 
 #[cfg(feature = "physics")]

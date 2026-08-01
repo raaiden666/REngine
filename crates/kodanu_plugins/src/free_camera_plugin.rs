@@ -9,9 +9,9 @@ use {
     kodanu_transform::Transform,
 };
 
-pub struct DemoCameraPlugin;
+pub struct FreeCameraPlugin;
 
-impl Plugin for DemoCameraPlugin {
+impl Plugin for FreeCameraPlugin {
     fn build(&self, app: &mut AppBuilder) {
         app.add_system(Stage::Startup, test_camera_system);
         app.add_system(Stage::LateUpdate, perspective_camera_system);
