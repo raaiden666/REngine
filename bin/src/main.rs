@@ -18,7 +18,7 @@ fn main() {
 
     app.add_plugin(DemoCameraPlugin)
         .add_plugin(DemoMeshPlugin)
-        .add_plugin(DemoTestPhysicsPlugin)
+        .add_plugin(DemoPhysicsScenePlugin)
         .add_plugin(PhysicsPlugin);
 
     app.run();

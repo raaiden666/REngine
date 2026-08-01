@@ -11,9 +11,9 @@ use {
     kodanu_transform::Transform,
 };
 
-pub struct DemoTestPhysicsPlugin;
+pub struct DemoPhysicsScenePlugin;
 
-impl Plugin for DemoTestPhysicsPlugin {
+impl Plugin for DemoPhysicsScenePlugin {
     fn build(&self, app: &mut kodanu_app::AppBuilder) {
         app.add_system(Stage::Startup, spawn_mesh_physics_system);
     }
