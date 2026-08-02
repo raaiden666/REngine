@@ -1,4 +1,4 @@
-use crate::api::KeyCode;
+use crate::KeyCode;
 
 pub(crate) struct AxisBinding {
     positive: KeyCode,

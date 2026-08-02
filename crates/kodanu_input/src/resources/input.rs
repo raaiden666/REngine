@@ -1,7 +1,4 @@
-use crate::{
-    api::{KeyCode, MouseKey},
-    internal::ButtonState,
-};
+use crate::{ButtonState, KeyCode, MouseKey};
 
 use {
     kodanu_ecs::{WorldCell, Write},
