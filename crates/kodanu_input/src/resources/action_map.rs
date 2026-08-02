@@ -1,4 +1,8 @@
-use crate::{Input, KeyCode, action::Action, axis::Axis, axis_binding::AxisBinding};
+use crate::{
+    api::{Action, Axis, KeyCode},
+    internal::AxisBinding,
+    resources::Input,
+};
 
 use hashbrown::HashMap;
 

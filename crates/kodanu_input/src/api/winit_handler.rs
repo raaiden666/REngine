@@ -1,4 +1,4 @@
-use crate::{Input, WinitMapper};
+use crate::{internal::WinitMapper, resources::Input};
 
 use kodanu_math::DVec2;
 
