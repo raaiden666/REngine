@@ -8,13 +8,14 @@ use {
     kodanu_input::{ActionMap, Input, KeyCode, WinitHandler},
     kodanu_log::LogConfig,
     kodanu_math::{DVec2, UVec2},
+    kodanu_plugin::{Plugin, PluginRegistry},
     kodanu_scheduler::{Scheduler, Stage, System},
     kodanu_time::Time,
     kodanu_window::WindowConfig,
     tracing_subscriber::fmt,
 };
 
-use kodanu_plugin::{Plugin, PluginRegistry};
+use kodanu_camera::ActiveCamera;
 use winit::{
     application::ApplicationHandler,
     dpi::PhysicalSize,
@@ -145,7 +146,7 @@ impl ApplicationHandler for App {
         self.scheduler
             .add(Stage::Render, EditorView::update_view_system);
 
-        self.scheduler.run(Stage::Startup, self.world.cell());
+        self.scheduler.run_startup(self.world.cell());
     }
 
     fn window_event(
@@ -169,26 +170,21 @@ impl App {
             self.runtime.as_mut().unwrap_unchecked()
         });
 
-        let (input, editor, queue) = (
+        let (input, editor, queue, time) = (
             world.res::<Read<Input>>(),
             world.res::<Read<EditorView>>(),
             world.res::<Read<RenderQueue>>(),
+            world.res::<Read<Time>>(),
         );
 
         if input.key_just_pressed(KeyCode::Escape) {
             event_loop.exit();
         }
 
-        self.scheduler.run(Stage::PreFixedUpdate, world);
-        self.scheduler.run(Stage::FixedUpdate, world);
-        self.scheduler.run(Stage::PostFixedUpdate, world);
+        self.scheduler.run_fixed(world, time.delta());
 
-        self.scheduler.run(Stage::PreUpdate, world);
-        self.scheduler.run(Stage::Update, world);
-        self.scheduler.run(Stage::LateUpdate, world);
-
-        self.scheduler.run(Stage::EndFrame, world);
-        self.scheduler.run(Stage::Render, world);
+        self.scheduler.run_update(world);
+        self.scheduler.run_render(world);
 
         runtime.render(editor.view_projection(), queue.items());
 
@@ -202,7 +198,7 @@ impl App {
 
         runtime.surface_resize(UVec2::new(size.width, size.height));
 
-        for camera in world.view::<Write<Camera>>() {
+        for (camera, _) in world.view::<(Write<Camera>, Read<ActiveCamera>)>() {
             camera.set_viewport_size(size.width, size.height);
         }
     }

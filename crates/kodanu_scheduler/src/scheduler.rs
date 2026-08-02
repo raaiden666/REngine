@@ -1,15 +1,17 @@
-use crate::{Schedule, Stage, schedule::System};
+use crate::{FixedRunner, Schedule, Stage, System};
 
 use {kodanu_ecs::WorldCell, std::array::from_fn};
 
 pub struct Scheduler {
     schedules: [Schedule; Stage::COUNT],
+    fixed_runner: FixedRunner,
 }
 
 impl Default for Scheduler {
     fn default() -> Self {
         Self {
             schedules: from_fn(|_| Schedule::default()),
+            fixed_runner: FixedRunner::default(),
         }
     }
 }
@@ -20,7 +22,38 @@ impl Scheduler {
     }
 
     #[inline]
-    pub fn run(&mut self, stage: Stage, world: WorldCell) {
+    pub fn run_startup(&mut self, world: WorldCell) {
+        self.run(Stage::Startup, world);
+    }
+
+    #[inline]
+    pub fn run_fixed(&mut self, world: WorldCell, delta: f32) {
+        let fixed_steps = self.fixed_runner.consume(delta);
+
+        for _ in 0..fixed_steps {
+            self.run(Stage::PreFixedUpdate, world);
+            self.run(Stage::FixedUpdate, world);
+            self.run(Stage::PostFixedUpdate, world);
+        }
+    }
+
+    #[inline]
+    pub fn run_update(&mut self, world: WorldCell) {
+        self.run(Stage::PreUpdate, world);
+        self.run(Stage::Update, world);
+        self.run(Stage::LateUpdate, world);
+        self.run(Stage::EndFrame, world);
+    }
+
+    #[inline]
+    pub fn run_render(&mut self, world: WorldCell) {
+        self.run(Stage::Render, world);
+    }
+}
+
+impl Scheduler {
+    #[inline]
+    pub(crate) fn run(&mut self, stage: Stage, world: WorldCell) {
         self.schedules[stage.as_usize()].run(world);
     }
 }
