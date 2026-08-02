@@ -1,4 +1,4 @@
-use crate::{Camera, components::ActiveCamera};
+use crate::{ActiveCamera, Camera};
 
 use {
     kodanu_ecs::{Read, WorldCell, Write},
