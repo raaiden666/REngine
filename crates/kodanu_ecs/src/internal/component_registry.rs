@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 use crate::{Component, ComponentStorage, SparseSet};
 
 use {hashbrown::HashMap, std::any::TypeId};

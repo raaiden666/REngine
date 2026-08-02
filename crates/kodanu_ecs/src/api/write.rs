@@ -12,7 +12,7 @@ where
     type Storage = WriteStorage<'w, T>;
 
     #[inline]
-    fn fetch(world: crate::WorldCell<'w>) -> Self::Storage {
+    fn fetch(world: WorldCell<'w>) -> Self::Storage {
         WriteStorage::new(world.storage_mut::<T>())
     }
 }

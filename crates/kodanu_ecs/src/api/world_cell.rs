@@ -1,8 +1,7 @@
 #![allow(dead_code)]
 
 use crate::{
-    Bundle, Component, ComponentRegistry, Entity, Resource, ResourceAccess, SparseSet, View,
-    ViewAccess, World,
+    Bundle, Component, Entity, Resource, ResourceAccess, SparseSet, View, ViewAccess, World,
 };
 
 use std::{marker::PhantomData, ptr::NonNull};
@@ -45,16 +44,6 @@ impl<'w> WorldCell<'w> {
                 .storage_mut::<C>()
                 .insert(entity.id, component)
         }
-    }
-
-    #[inline]
-    pub fn components(self) -> &'w ComponentRegistry {
-        unsafe { &(*self.world.as_ptr()).storage }
-    }
-
-    #[inline]
-    pub fn components_mut(self) -> &'w mut ComponentRegistry {
-        unsafe { &mut (*self.world.as_ptr()).storage }
     }
 
     #[inline]
