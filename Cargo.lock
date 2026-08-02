@@ -857,7 +857,12 @@ dependencies = [
 name = "kodanu_camera"
 version = "0.1.0"
 dependencies = [
+ "kodanu_ecs",
+ "kodanu_input",
  "kodanu_math",
+ "kodanu_plugin",
+ "kodanu_scheduler",
+ "kodanu_time",
  "kodanu_transform",
 ]
 

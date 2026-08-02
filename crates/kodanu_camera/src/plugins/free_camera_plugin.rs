@@ -1,5 +1,6 @@
+use crate::Camera;
+
 use {
-    kodanu_camera::Camera,
     kodanu_ecs::{Read, WorldCell, Write},
     kodanu_input::{ActionMap, Axis, Input},
     kodanu_math::Vec3,

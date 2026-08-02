@@ -1,5 +1,9 @@
-mod camera;
-mod perspective_projection;
-mod projection;
+mod components;
+mod internal;
+mod plugins;
 
-pub use {camera::Camera, perspective_projection::PerspectiveProjection, projection::Projection};
+pub use components::Camera;
+
+pub use internal::{PerspectiveProjection, Projection};
+
+pub use plugins::FreeCameraPlugin;

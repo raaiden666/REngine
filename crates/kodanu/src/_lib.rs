@@ -1,7 +1,7 @@
 pub mod prelude {
     pub use kodanu_app::App;
     pub use kodanu_assets::{Material, Mesh, Vertex};
-    pub use kodanu_camera::{Camera, PerspectiveProjection, Projection};
+    pub use kodanu_camera::{Camera, FreeCameraPlugin, PerspectiveProjection, Projection};
     pub use kodanu_color::Color;
     pub use kodanu_ecs::{Entity, Read, World, WorldCell, Write};
     pub use kodanu_editor::EditorView;
@@ -18,7 +18,7 @@ pub mod prelude {
     #[cfg(feature = "physics")]
     pub use kodanu_physics::prelude::*;
     #[cfg(feature = "plugins")]
-    pub use kodanu_plugins::{DemoMeshScenePlugin, FreeCameraPlugin};
+    pub use kodanu_plugins::DemoMeshScenePlugin;
 }
 
 #[cfg(feature = "physics")]
