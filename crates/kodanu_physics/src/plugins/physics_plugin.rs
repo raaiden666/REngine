@@ -43,11 +43,7 @@ fn spawn_collider_shapes_system(world: WorldCell) {
             continue;
         }
 
-        let Some(handle) = rigidbody.handle else {
-            continue;
-        };
-
-        collider.handle = Some(physics.create_collider(collider, handle));
+        collider.handle = Some(physics.create_collider(collider, rigidbody));
     }
 }
 

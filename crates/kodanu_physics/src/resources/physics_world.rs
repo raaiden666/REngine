@@ -1,15 +1,30 @@
 #![allow(dead_code)]
 
-use crate::{
-    prelude::{Collider, RigidBody},
-    rapier3d::*,
-};
+use crate::{prelude::*, rapier3d::*};
 
-use kodanu_transform::Transform;
+use {kodanu_math::Vec3, kodanu_transform::Transform};
 
 #[derive(Default)]
 pub struct PhysicsWorld {
     physics: RapierPhysicsWorld,
+}
+
+impl PhysicsWorld {
+    pub fn set_gravity(&mut self, gravity: Vec3) {
+        self.physics.gravity = Vec3::new(gravity.x, gravity.y, gravity.z);
+    }
+
+    pub fn remove_rigid_body(&mut self, body: RigidBody) {
+        if let Some(handle) = body.handle {
+            self.physics.remove_body(handle);
+        }
+    }
+
+    pub fn remove_collider(&mut self, collider: Collider) {
+        if let Some(handle) = collider.handle {
+            self.physics.remove_collider(handle);
+        }
+    }
 }
 
 impl PhysicsWorld {
@@ -47,19 +62,15 @@ impl PhysicsWorld {
         transform: &Transform,
     ) -> RapierRigidBodyHandle {
         self.physics
-            .bodies
-            .insert(rigid_body.builder(transform).build())
+            .insert_body(rigid_body.builder(transform).build())
     }
 
     pub(crate) fn create_collider(
         &mut self,
         collider: &Collider,
-        parent: RapierRigidBodyHandle,
+        parent: &RigidBody,
     ) -> RapierColliderHandle {
-        self.physics.colliders.insert_with_parent(
-            collider.builder().build(),
-            parent,
-            &mut self.physics.bodies,
-        )
+        self.physics
+            .insert_collider(collider.builder().build(), parent.handle)
     }
 }
