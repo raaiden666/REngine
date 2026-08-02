@@ -1,3 +1,3 @@
-mod demo_mesh_scene_plugin;
+mod demo;
 
-pub use demo_mesh_scene_plugin::DemoMeshScenePlugin;
+pub use demo::*;

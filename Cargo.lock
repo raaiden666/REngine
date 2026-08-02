@@ -966,15 +966,12 @@ name = "kodanu_plugins"
 version = "0.1.0"
 dependencies = [
  "kodanu_assets",
- "kodanu_camera",
  "kodanu_color",
  "kodanu_ecs",
  "kodanu_graphics",
- "kodanu_input",
  "kodanu_math",
  "kodanu_plugin",
  "kodanu_scheduler",
- "kodanu_time",
  "kodanu_transform",
 ]
 

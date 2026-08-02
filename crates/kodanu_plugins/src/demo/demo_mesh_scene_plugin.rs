@@ -4,8 +4,7 @@ use {
     kodanu_ecs::WorldCell,
     kodanu_graphics::MeshRenderer,
     kodanu_math::Vec3,
-    kodanu_plugin::Plugin,
-    kodanu_plugin::PluginRegistry,
+    kodanu_plugin::{Plugin, PluginRegistry},
     kodanu_scheduler::Stage,
     kodanu_transform::Transform,
 };
