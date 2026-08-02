@@ -5,8 +5,7 @@ use crate::GpuMaterial;
 use {
     kodanu_assets::Material,
     std::{collections::HashMap, sync::Arc},
-    wgpu::BindGroupLayout,
-    wgpu::Device,
+    wgpu::{BindGroupLayout, Device},
 };
 
 pub(crate) struct MaterialCache {

@@ -1,6 +1,6 @@
 use wgpu::{Device, ShaderModule, ShaderModuleDescriptor, ShaderSource};
 
-pub struct ShaderStorage;
+pub(crate) struct ShaderStorage;
 
 impl ShaderStorage {
     pub fn vertex_shader(device: &Device) -> ShaderModule {

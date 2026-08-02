@@ -1,7 +1,4 @@
-use crate::{
-    RendererConfig,
-    gpu::{GraphicsDevice, RenderSurface},
-};
+use crate::{GraphicsDevice, RenderSurface, RendererConfig};
 
 use {kodanu_math::UVec2, kodanu_window::Window};
 

@@ -1,9 +1,6 @@
 use crate::{
-    AssetResources, RenderItem, RendererConfig, SampleCount,
-    gpu::{GraphicsDevice, RenderSurface, RenderTexture},
-    pipeline::GraphicsPipeline,
-    resources::FrameResources,
-    setup::WgpuInit,
+    AssetResources, FrameResources, GraphicsPipeline, RenderItem, RendererConfig, SampleCount,
+    WgpuInit, {GraphicsDevice, RenderSurface, RenderTexture},
 };
 
 use wgpu::{
@@ -12,7 +9,11 @@ use wgpu::{
     SurfaceTexture, TextureView, TextureViewDescriptor,
 };
 
-use {kodanu_math::Mat4, kodanu_math::UVec2, kodanu_window::Window, pollster::block_on};
+use {
+    kodanu_math::{Mat4, UVec2},
+    kodanu_window::Window,
+    pollster::block_on,
+};
 
 pub struct Renderer {
     graphics_device: GraphicsDevice,

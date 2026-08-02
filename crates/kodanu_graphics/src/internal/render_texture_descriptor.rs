@@ -5,7 +5,7 @@ use crate::SampleCount;
 use wgpu::{TextureFormat, TextureUsages};
 
 #[derive(Clone, Copy)]
-pub struct RenderTextureDescriptor {
+pub(crate) struct RenderTextureDescriptor {
     pub format: TextureFormat,
     pub usage: TextureUsages,
     pub sample_count: SampleCount,

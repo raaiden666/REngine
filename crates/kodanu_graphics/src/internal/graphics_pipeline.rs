@@ -1,9 +1,6 @@
 use crate::{
-    RendererConfig,
-    gpu::{GraphicsDevice, RenderSurface, RenderTexture},
-    pipeline::vertex_layout::VertexLayout,
-    resources::FrameResources,
-    shader::ShaderStorage,
+    FrameResources, GraphicsDevice, RenderSurface, RenderTexture, RendererConfig, ShaderStorage,
+    VertexLayout,
 };
 
 use wgpu::{

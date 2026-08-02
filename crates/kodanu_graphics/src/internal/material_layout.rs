@@ -1,4 +1,4 @@
-use crate::gpu::GraphicsDevice;
+use crate::GraphicsDevice;
 
 use wgpu::{
     BindGroupLayout, BindGroupLayoutDescriptor, BindGroupLayoutEntry, BindingType,

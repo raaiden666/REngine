@@ -1,6 +1,4 @@
-use crate::{
-    CameraRenderer, ModelSrorageBuffer, RenderItem, gpu::GraphicsDevice, material::MaterialLayout,
-};
+use crate::{CameraRenderer, GraphicsDevice, MaterialLayout, ModelSrorageBuffer, RenderItem};
 
 use {kodanu_math::Mat4, wgpu::Queue};
 

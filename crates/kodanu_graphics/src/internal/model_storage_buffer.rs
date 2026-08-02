@@ -1,4 +1,4 @@
-use crate::{ModelUniform, RenderItem, gpu::GraphicsDevice};
+use crate::{GraphicsDevice, ModelUniform, RenderItem};
 
 use wgpu::{
     BindGroup, BindGroupDescriptor, BindGroupEntry, BindGroupLayout, BindGroupLayoutDescriptor,

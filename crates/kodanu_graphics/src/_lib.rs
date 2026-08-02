@@ -1,21 +1,7 @@
-mod camera;
+mod api;
 mod components;
-mod config;
-mod gpu;
-mod material;
-mod mesh;
-mod model;
-mod pipeline;
-mod render;
-mod resources;
-mod setup;
-mod shader;
+mod internal;
 
-pub use components::MeshRenderer;
-pub use config::{Backend, RendererConfig, SampleCount};
-pub use render::{RenderItem, RenderQueue, Renderer};
-pub use resources::AssetResources;
+pub use {api::*, components::*};
 
-pub(crate) use camera::{CameraRenderer, CameraUniform};
-pub(crate) use material::{GpuMaterial, MaterialUniform};
-pub(crate) use model::{MaterialCache, ModelSrorageBuffer, ModelUniform};
+pub(crate) use internal::*;

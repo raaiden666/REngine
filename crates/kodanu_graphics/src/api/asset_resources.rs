@@ -1,6 +1,5 @@
 use crate::{
-    GpuMaterial, MaterialCache, RenderItem,
-    mesh::{GpuMesh, MeshCache},
+    GpuMaterial, MaterialCache, RenderItem, {GpuMesh, MeshCache},
 };
 
 use {

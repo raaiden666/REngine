@@ -1,6 +1,6 @@
 #![allow(dead_code)]
 
-use crate::{SampleCount, gpu::RenderTextureDescriptor};
+use crate::{RenderTextureDescriptor, SampleCount};
 
 use kodanu_math::UVec2;
 

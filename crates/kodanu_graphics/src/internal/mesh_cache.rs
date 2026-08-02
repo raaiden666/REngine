@@ -1,6 +1,6 @@
 #![allow(dead_code)]
 
-use crate::mesh::GpuMesh;
+use crate::GpuMesh;
 
 use {
     kodanu_assets::Mesh,

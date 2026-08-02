@@ -1,4 +1,4 @@
-use crate::{CameraUniform, gpu::GraphicsDevice};
+use crate::{CameraUniform, GraphicsDevice};
 
 use {bytemuck::bytes_of, kodanu_math::Mat4};
 
