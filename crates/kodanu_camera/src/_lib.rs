@@ -2,7 +2,7 @@ mod components;
 mod internal;
 mod plugins;
 
-pub use components::Camera;
+pub use components::{ActiveCamera, Camera};
 
 pub use internal::{PerspectiveProjection, Projection};
 

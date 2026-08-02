@@ -1,3 +1,4 @@
+mod active_camera;
 mod camera;
 
-pub use camera::Camera;
+pub use {active_camera::ActiveCamera, camera::Camera};

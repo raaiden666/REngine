@@ -1,5 +1,5 @@
 use {
-    kodanu_camera::Camera,
+    kodanu_camera::{ActiveCamera, Camera},
     kodanu_ecs::{Read, WorldCell, Write},
     kodanu_math::Mat4,
     kodanu_transform::Transform,
@@ -15,7 +15,9 @@ impl EditorView {
     pub fn update_view_system(world: WorldCell) {
         let editor = world.res::<Write<EditorView>>();
 
-        for (transform, camera) in world.view::<(Read<Transform>, Read<Camera>)>() {
+        for (transform, camera, _) in
+            world.view::<(Read<Transform>, Read<Camera>, Read<ActiveCamera>)>()
+        {
             editor.view_projection = camera.view_projection(transform);
         }
     }

@@ -1,4 +1,4 @@
-use crate::Camera;
+use crate::{Camera, components::ActiveCamera};
 
 use {
     kodanu_ecs::{Read, WorldCell, Write},
@@ -20,7 +20,11 @@ impl Plugin for FreeCameraPlugin {
 }
 
 fn test_camera_system(world: WorldCell) {
-    world.spawn_bundle((Transform::default(), Camera::default()));
+    world.spawn_bundle((
+        Transform::default(),
+        Camera::default(),
+        ActiveCamera::default(),
+    ));
 }
 
 fn perspective_camera_system(world: WorldCell) {
@@ -30,7 +34,7 @@ fn perspective_camera_system(world: WorldCell) {
         world.res::<Read<Time>>(),
     );
 
-    for (transform, _) in world.view::<(Write<Transform>, Read<Camera>)>() {
+    for (transform, _, _) in world.view::<(Write<Transform>, Read<Camera>, Read<ActiveCamera>)>() {
         let direction = transform.forward() * action_map.axis(Axis::MoveY, input)
             + -transform.right() * action_map.axis(Axis::MoveX, input)
             + transform.up() * action_map.axis(Axis::MoveZ, input);
