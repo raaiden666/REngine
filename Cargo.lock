@@ -974,10 +974,13 @@ dependencies = [
  "kodanu_assets",
  "kodanu_color",
  "kodanu_ecs",
+ "kodanu_editor",
  "kodanu_graphics",
+ "kodanu_input",
  "kodanu_math",
  "kodanu_plugin",
  "kodanu_scheduler",
+ "kodanu_time",
  "kodanu_transform",
 ]
 

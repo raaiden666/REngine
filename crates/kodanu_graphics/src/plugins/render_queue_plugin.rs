@@ -20,11 +20,10 @@ impl Plugin for RenderQueuePlugin {
 #[inline]
 fn update_queue_system(world: WorldCell) {
     let queue = world.res::<Write<RenderQueue>>();
-    let query = world.view::<(Read<Transform>, Read<MeshRenderer>)>();
 
     queue.clear();
 
-    for (transform, mesh_renderer) in query {
+    for (transform, mesh_renderer) in world.view::<(Read<Transform>, Read<MeshRenderer>)>() {
         queue.push(RenderItem::new(
             mesh_renderer.mesh_handle(),
             mesh_renderer.material_handle(),

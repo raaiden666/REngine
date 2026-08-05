@@ -1,3 +1,5 @@
+use crate::Plugin;
+
 use {
     kodanu_ecs::{Resource, WorldCell},
     kodanu_scheduler::{Scheduler, Stage, System},
@@ -21,5 +23,9 @@ impl PluginRegistry<'_> {
 
     pub fn insert_resource<R: Resource>(&mut self, resource: R) -> Option<R> {
         self.world.insert_resource(resource)
+    }
+
+    pub fn add_plugin(&mut self, plugin: impl Plugin) {
+        plugin.build(self);
     }
 }

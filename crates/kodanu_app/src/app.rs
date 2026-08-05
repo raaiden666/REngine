@@ -5,7 +5,7 @@ use {
     kodanu_ecs::{Read, World, Write},
     kodanu_editor::EditorView,
     kodanu_graphics::{RenderQueue, RendererConfig},
-    kodanu_input::{Input, InputPlugin, KeyCode, WinitHandler},
+    kodanu_input::{Input, KeyCode, WinitHandler},
     kodanu_log::LogConfig,
     kodanu_math::{DVec2, UVec2},
     kodanu_plugin::{Plugin, PluginRegistry},
@@ -15,9 +15,6 @@ use {
     tracing_subscriber::fmt,
 };
 
-use kodanu_editor::EditorViewPlugin;
-use kodanu_graphics::RenderQueuePlugin;
-use kodanu_time::TimePlugin;
 use winit::{
     application::ApplicationHandler,
     dpi::PhysicalSize,
@@ -135,11 +132,6 @@ impl ApplicationHandler for App {
 
         self.runtime =
             Some(AppRuntime::new(event_loop, &self.config).expect("Failed to create app"));
-
-        self.add_plugin(InputPlugin);
-        self.add_plugin(TimePlugin);
-        self.add_plugin(RenderQueuePlugin);
-        self.add_plugin(EditorViewPlugin);
 
         self.scheduler.run_startup(self.world.cell());
     }
