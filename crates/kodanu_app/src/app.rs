@@ -15,6 +15,7 @@ use {
     tracing_subscriber::fmt,
 };
 
+use kodanu_time::TimePlugin;
 use winit::{
     application::ApplicationHandler,
     dpi::PhysicalSize,
@@ -135,9 +136,7 @@ impl ApplicationHandler for App {
 
         self.add_plugin(InputPlugin);
 
-        self.world.insert_resource(Time::default());
-        self.scheduler
-            .add(Stage::PreUpdate, Time::update_time_system);
+        self.add_plugin(TimePlugin);
 
         self.world.insert_resource(RenderQueue::default());
         self.scheduler

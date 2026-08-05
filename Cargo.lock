@@ -989,6 +989,8 @@ name = "kodanu_time"
 version = "0.1.0"
 dependencies = [
  "kodanu_ecs",
+ "kodanu_plugin",
+ "kodanu_scheduler",
 ]
 
 [[package]]
