@@ -16,6 +16,7 @@ use {
 };
 
 use kodanu_editor::EditorViewPlugin;
+use kodanu_graphics::RenderQueuePlugin;
 use kodanu_time::TimePlugin;
 use winit::{
     application::ApplicationHandler,
@@ -136,13 +137,8 @@ impl ApplicationHandler for App {
             Some(AppRuntime::new(event_loop, &self.config).expect("Failed to create app"));
 
         self.add_plugin(InputPlugin);
-
         self.add_plugin(TimePlugin);
-
-        self.world.insert_resource(RenderQueue::default());
-        self.scheduler
-            .add(Stage::Render, RenderQueue::update_queue_system);
-
+        self.add_plugin(RenderQueuePlugin);
         self.add_plugin(EditorViewPlugin);
 
         self.scheduler.run_startup(self.world.cell());

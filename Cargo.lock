@@ -910,6 +910,8 @@ dependencies = [
  "kodanu_ecs",
  "kodanu_editor",
  "kodanu_math",
+ "kodanu_plugin",
+ "kodanu_scheduler",
  "kodanu_transform",
  "kodanu_window",
  "pollster",

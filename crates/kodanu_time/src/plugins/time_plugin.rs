@@ -18,7 +18,7 @@ impl Plugin for TimePlugin {
 }
 
 #[inline]
-pub fn update_time_system(world: WorldCell) {
+fn update_time_system(world: WorldCell) {
     let time = world.res::<Write<Time>>();
 
     let now = Instant::now();

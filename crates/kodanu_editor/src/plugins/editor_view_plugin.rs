@@ -19,7 +19,7 @@ impl Plugin for EditorViewPlugin {
 }
 
 #[inline]
-pub fn update_view_system(world: WorldCell) {
+fn update_view_system(world: WorldCell) {
     let editor = world.res::<Write<EditorView>>();
 
     for (transform, camera, _) in
