@@ -8,12 +8,13 @@ pub enum Stage {
     PreUpdate,
     Update,
     LateUpdate,
-    EndFrame,
+    PreRender,
     Render,
+    PostRender,
 }
 
 impl Stage {
-    pub const COUNT: usize = 9;
+    pub const COUNT: usize = 12;
 
     #[inline]
     pub fn as_usize(self) -> usize {

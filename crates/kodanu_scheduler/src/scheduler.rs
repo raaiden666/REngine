@@ -22,6 +22,11 @@ impl Scheduler {
     }
 
     #[inline]
+    pub fn run(&mut self, stage: Stage, world: WorldCell) {
+        self.schedules[stage.as_usize()].run(world);
+    }
+
+    #[inline]
     pub fn run_startup(&mut self, world: WorldCell) {
         self.run(Stage::Startup, world);
     }
@@ -42,18 +47,12 @@ impl Scheduler {
         self.run(Stage::PreUpdate, world);
         self.run(Stage::Update, world);
         self.run(Stage::LateUpdate, world);
-        self.run(Stage::EndFrame, world);
     }
 
     #[inline]
     pub fn run_render(&mut self, world: WorldCell) {
+        self.run(Stage::PreRender, world);
         self.run(Stage::Render, world);
-    }
-}
-
-impl Scheduler {
-    #[inline]
-    pub(crate) fn run(&mut self, stage: Stage, world: WorldCell) {
-        self.schedules[stage.as_usize()].run(world);
+        self.run(Stage::PostRender, world);
     }
 }

@@ -1,9 +1,6 @@
 use crate::{ButtonState, KeyCode, MouseKey};
 
-use {
-    kodanu_ecs::{WorldCell, Write},
-    kodanu_math::{DVec2, Vec2},
-};
+use kodanu_math::{DVec2, Vec2};
 
 #[derive(Default)]
 pub struct Input {
@@ -21,18 +18,6 @@ impl Input {
             mouse_position: DVec2::ZERO,
             mouse_wheel_delta: Vec2::ZERO,
         }
-    }
-}
-
-impl Input {
-    #[inline]
-    pub fn update_end_frame_system(world: WorldCell) {
-        let input = world.res::<Write<Input>>();
-
-        input.keyboard.end_frame();
-        input.mouse.end_frame();
-
-        input.mouse_wheel_delta = Vec2::ZERO;
     }
 }
 
@@ -70,23 +55,28 @@ impl Input {
 
 impl Input {
     #[inline]
-    pub fn set_mouse_position(&mut self, position: DVec2) {
+    pub(crate) fn keyboard_mut(&mut self) -> &mut ButtonState<KeyCode> {
+        &mut self.keyboard
+    }
+
+    #[inline]
+    pub(crate) fn mouse_mut(&mut self) -> &mut ButtonState<MouseKey> {
+        &mut self.mouse
+    }
+
+    #[inline]
+    pub(crate) fn set_mouse_position(&mut self, position: DVec2) {
         self.mouse_position = position;
     }
 
     #[inline]
-    pub fn mouse_position(&self) -> DVec2 {
-        self.mouse_position
-    }
-
-    #[inline]
-    pub fn add_mouse_wheel_delta(&mut self, x: f32, y: f32) {
+    pub(crate) fn add_mouse_wheel_delta(&mut self, x: f32, y: f32) {
         self.mouse_wheel_delta += Vec2::new(x, y);
     }
 
     #[inline]
-    pub fn mouse_wheel_delta(&self) -> Vec2 {
-        self.mouse_wheel_delta
+    pub(crate) fn set_mouse_wheel_delta(&mut self, delta: Vec2) {
+        self.mouse_wheel_delta = delta;
     }
 }
 

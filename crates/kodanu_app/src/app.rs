@@ -1,11 +1,11 @@
 use crate::{AppConfig, AppRuntime};
 
 use {
-    kodanu_camera::Camera,
+    kodanu_camera::{ActiveCamera, Camera},
     kodanu_ecs::{Read, World, Write},
     kodanu_editor::EditorView,
     kodanu_graphics::{RenderQueue, RendererConfig},
-    kodanu_input::{ActionMap, Input, KeyCode, WinitHandler},
+    kodanu_input::{Input, InputPlugin, KeyCode, WinitHandler},
     kodanu_log::LogConfig,
     kodanu_math::{DVec2, UVec2},
     kodanu_plugin::{Plugin, PluginRegistry},
@@ -15,7 +15,6 @@ use {
     tracing_subscriber::fmt,
 };
 
-use kodanu_camera::ActiveCamera;
 use winit::{
     application::ApplicationHandler,
     dpi::PhysicalSize,
@@ -109,13 +108,18 @@ impl App {
         self
     }
 
-    pub fn add_end_frame_system(mut self, system: System) -> Self {
-        self.scheduler.add(Stage::EndFrame, system);
+    pub fn add_pre_render_system(mut self, system: System) -> Self {
+        self.scheduler.add(Stage::PreRender, system);
         self
     }
 
     pub fn add_render_system(mut self, system: System) -> Self {
         self.scheduler.add(Stage::Render, system);
+        self
+    }
+
+    pub fn add_post_render_system(mut self, system: System) -> Self {
+        self.scheduler.add(Stage::PostRender, system);
         self
     }
 }
@@ -129,10 +133,7 @@ impl ApplicationHandler for App {
         self.runtime =
             Some(AppRuntime::new(event_loop, &self.config).expect("Failed to create app"));
 
-        self.world.insert_resource(Input::default());
-        self.world.insert_resource(ActionMap::default());
-        self.scheduler
-            .add(Stage::EndFrame, Input::update_end_frame_system);
+        self.add_plugin(InputPlugin);
 
         self.world.insert_resource(Time::default());
         self.scheduler
