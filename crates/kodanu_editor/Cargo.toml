@@ -13,3 +13,5 @@ kodanu_input = { workspace = true }
 kodanu_time = { workspace = true }
 kodanu_math = { workspace = true }
 kodanu_transform = { workspace = true }
+kodanu_plugin = { workspace = true }
+kodanu_scheduler = { workspace = true }

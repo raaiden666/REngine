@@ -1,3 +1,4 @@
-mod editor;
+mod api;
+mod plugins;
 
-pub use editor::EditorView;
+pub use {api::*, plugins::*};

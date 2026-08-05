@@ -15,6 +15,7 @@ use {
     tracing_subscriber::fmt,
 };
 
+use kodanu_editor::EditorViewPlugin;
 use kodanu_time::TimePlugin;
 use winit::{
     application::ApplicationHandler,
@@ -142,9 +143,7 @@ impl ApplicationHandler for App {
         self.scheduler
             .add(Stage::Render, RenderQueue::update_queue_system);
 
-        self.world.insert_resource(EditorView::default());
-        self.scheduler
-            .add(Stage::Render, EditorView::update_view_system);
+        self.add_plugin(EditorViewPlugin);
 
         self.scheduler.run_startup(self.world.cell());
     }
