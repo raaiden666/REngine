@@ -2,11 +2,11 @@ use crate::{ActiveCamera, Camera};
 
 use {
     kodanu_ecs::{Read, WorldCell, Write},
-    kodanu_input::{ActionMap, Axis, Input},
+    kodanu_input::{ActionMap, Axis, Input, InputPlugin},
     kodanu_math::Vec3,
     kodanu_plugin::{Plugin, PluginRegistry},
     kodanu_scheduler::Stage,
-    kodanu_time::Time,
+    kodanu_time::{Time, TimePlugin},
     kodanu_transform::Transform,
 };
 
@@ -16,6 +16,11 @@ impl Plugin for FreeCameraPlugin {
     fn build(&self, app: &mut PluginRegistry) {
         app.add_system(Stage::Startup, test_camera_system);
         app.add_system(Stage::LateUpdate, perspective_camera_system);
+    }
+
+    fn dependencies(&self, app: &mut PluginRegistry) {
+        app.add_plugin(InputPlugin);
+        app.add_plugin(TimePlugin);
     }
 }
 

@@ -830,6 +830,7 @@ name = "kodanu_app"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "hashbrown 0.17.1",
  "kodanu_camera",
  "kodanu_ecs",
  "kodanu_editor",
@@ -963,6 +964,7 @@ dependencies = [
 name = "kodanu_plugin"
 version = "0.1.0"
 dependencies = [
+ "hashbrown 0.17.1",
  "kodanu_ecs",
  "kodanu_scheduler",
 ]
@@ -978,6 +980,7 @@ dependencies = [
  "kodanu_graphics",
  "kodanu_input",
  "kodanu_math",
+ "kodanu_physics",
  "kodanu_plugin",
  "kodanu_scheduler",
  "kodanu_time",

@@ -18,3 +18,4 @@ kodanu_plugin = { workspace = true }
 kodanu_input = { workspace = true }
 kodanu_time = { workspace = true }
 kodanu_editor = { workspace = true }
+kodanu_physics = { workspace = true }

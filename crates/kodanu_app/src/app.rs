@@ -1,10 +1,11 @@
 use crate::{AppConfig, AppRuntime};
 
 use {
+    hashbrown::HashSet,
     kodanu_camera::{ActiveCamera, Camera},
     kodanu_ecs::{Read, World, Write},
-    kodanu_editor::EditorView,
-    kodanu_graphics::{RenderQueue, RendererConfig},
+    kodanu_editor::{EditorView, EditorViewPlugin},
+    kodanu_graphics::{RenderQueue, RenderQueuePlugin, RendererConfig},
     kodanu_input::{Input, KeyCode, WinitHandler},
     kodanu_log::LogConfig,
     kodanu_math::{DVec2, UVec2},
@@ -12,6 +13,7 @@ use {
     kodanu_scheduler::{Scheduler, Stage, System},
     kodanu_time::Time,
     kodanu_window::WindowConfig,
+    std::any::TypeId,
     tracing_subscriber::fmt,
 };
 
@@ -29,6 +31,7 @@ pub struct App {
     world: World,
     scheduler: Scheduler,
     config: AppConfig,
+    plugins: HashSet<TypeId>,
 }
 
 impl App {
@@ -46,10 +49,11 @@ impl App {
     where
         P: Plugin,
     {
-        plugin.build(&mut PluginRegistry::new(
-            &mut self.scheduler,
-            &mut self.world.cell(),
-        ));
+        let world = &mut self.world.cell();
+
+        let mut registry = PluginRegistry::new(&mut self.scheduler, world, &mut self.plugins);
+
+        registry.add_plugin(plugin);
 
         self
     }
@@ -132,6 +136,9 @@ impl ApplicationHandler for App {
 
         self.runtime =
             Some(AppRuntime::new(event_loop, &self.config).expect("Failed to create app"));
+
+        self.add_plugin(RenderQueuePlugin);
+        self.add_plugin(EditorViewPlugin);
 
         self.scheduler.run_startup(self.world.cell());
     }

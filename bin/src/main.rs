@@ -17,7 +17,6 @@ fn main() {
         .with_log_config(log_config);
 
     app.add_plugin(DefaultPlugins)
-        .add_plugin(PhysicsPlugin)
         .add_plugin(FreeCameraPlugin)
         .add_plugin(DemoPhysicsScenePlugin);
 
