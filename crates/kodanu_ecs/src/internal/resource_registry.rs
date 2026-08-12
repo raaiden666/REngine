@@ -27,12 +27,12 @@ impl ResourceRegistry {
     }
 
     #[inline]
-    pub fn insert<T: Resource>(&mut self, resource: T) -> Option<T> {
+    pub fn insert<T: Resource>(&mut self, resource: T) {
         let previous = self.resources.insert(TypeId::of::<T>(), Box::new(resource));
 
         previous
             .and_then(|resource| resource.downcast::<T>().ok())
-            .map(|resource| *resource)
+            .map(|resource| *resource);
     }
 
     #[inline]

@@ -32,7 +32,7 @@ impl PluginRegistry<'_> {
         self.scheduler.add(stage, system);
     }
 
-    pub fn insert_resource<R: Resource>(&mut self, resource: R) -> Option<R> {
+    pub fn insert_resource<R: Resource>(&mut self, resource: R) {
         self.world.insert_resource(resource)
     }
 

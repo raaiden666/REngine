@@ -69,7 +69,7 @@ impl<'w> WorldCell<'w> {
 
 impl<'w> WorldCell<'w> {
     #[inline]
-    pub fn insert_resource<R: Resource>(self, resource: R) -> Option<R> {
+    pub fn insert_resource<R: Resource>(self, resource: R) {
         unsafe { (&mut *self.world.as_ptr()).insert_resource(resource) }
     }
 

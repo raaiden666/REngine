@@ -92,7 +92,7 @@ impl World {
 
 impl World {
     #[inline]
-    pub fn insert_resource<T: Resource>(&mut self, resource: T) -> Option<T> {
+    pub fn insert_resource<T: Resource>(&mut self, resource: T) {
         self.resources.insert(resource)
     }
 

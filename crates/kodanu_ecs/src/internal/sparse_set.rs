@@ -2,12 +2,14 @@ use crate::{Component, ComponentStorage};
 
 use std::{any::Any, mem::replace};
 
-pub const INVALID_DENSE_INDEX: u32 = u32::MAX;
-
 pub struct SparseSet<T> {
     pub(crate) sparse: Vec<u32>,
     pub(crate) indices: Vec<u32>,
     pub(crate) dense: Vec<T>,
+}
+
+impl<T> SparseSet<T> {
+    pub const INVALID_DENSE_INDEX: u32 = u32::MAX;
 }
 
 impl<T> Default for SparseSet<T> {
@@ -74,7 +76,7 @@ impl<T> SparseSet<T> {
     #[inline]
     pub fn remove(&mut self, entity: u32) -> Option<T> {
         let dense = self.dense_index(entity)?;
-        self.sparse[entity as usize] = INVALID_DENSE_INDEX;
+        self.sparse[entity as usize] = Self::INVALID_DENSE_INDEX;
 
         let component = self.dense.swap_remove(dense);
         self.indices.swap_remove(dense);
@@ -93,7 +95,7 @@ impl<T> SparseSet<T> {
     pub(crate) fn dense_index(&self, entity: u32) -> Option<usize> {
         let dense = *self.sparse.get(entity as usize)?;
 
-        if dense == INVALID_DENSE_INDEX {
+        if dense == Self::INVALID_DENSE_INDEX {
             return None;
         }
 
@@ -105,7 +107,7 @@ impl<T> SparseSet<T> {
         let requied = entity as usize + 1;
 
         if self.sparse.len() < requied {
-            self.sparse.resize(requied, INVALID_DENSE_INDEX);
+            self.sparse.resize(requied, Self::INVALID_DENSE_INDEX);
         }
     }
 }

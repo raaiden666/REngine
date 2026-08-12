@@ -16,7 +16,7 @@ pub mod prelude {
     pub use kodanu_window::WindowConfig;
 
     #[cfg(feature = "physics")]
-    pub use kodanu_physics::prelude::*;
+    pub use kodanu_physics::*;
     #[cfg(feature = "plugins")]
     pub use kodanu_plugins::*;
 }
