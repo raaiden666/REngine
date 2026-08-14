@@ -1,4 +1,3 @@
-mod plugin;
-mod plugin_registry;
+mod api;
 
-pub use {plugin::Plugin, plugin_registry::PluginRegistry};
+pub use api::*;

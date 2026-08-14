@@ -1,7 +1,7 @@
 use {kodanu_graphics::RendererConfig, kodanu_log::LogConfig, kodanu_window::WindowConfig};
 
 #[derive(Debug, Default)]
-pub struct AppConfig {
+pub(crate) struct AppConfig {
     window_config: WindowConfig,
     renderer_config: RendererConfig,
     log_config: LogConfig,

@@ -1,4 +1,3 @@
-mod default_plugins;
-mod demo_mesh_scene_plugin;
+mod api;
 
-pub use {default_plugins::DefaultPlugins, demo_mesh_scene_plugin::DemoMeshScenePlugin};
+pub use api::*;

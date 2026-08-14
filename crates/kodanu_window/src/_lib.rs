@@ -1,4 +1,3 @@
-mod window;
-mod window_config;
+mod api;
 
-pub use {window::Window, window_config::WindowConfig};
+pub use api::*;

@@ -1,5 +1,6 @@
-mod bounding_sphere;
-mod frustum;
-mod plane;
+mod api;
+mod internal;
 
-pub use {bounding_sphere::BoundingSphere, frustum::Frustum, plane::Plane};
+pub use api::*;
+
+pub(crate) use internal::*;

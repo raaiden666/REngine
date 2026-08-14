@@ -134,8 +134,7 @@ impl ApplicationHandler for App {
             return;
         }
 
-        self.runtime =
-            Some(AppRuntime::new(event_loop, &self.config).expect("Failed to create app"));
+        self.runtime = Some(AppRuntime::new(event_loop, &self.config));
 
         self.add_plugin(RenderQueuePlugin);
         self.add_plugin(EditorViewPlugin);

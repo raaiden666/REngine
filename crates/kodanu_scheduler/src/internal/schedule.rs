@@ -1,9 +1,9 @@
+use crate::System;
+
 use kodanu_ecs::WorldCell;
 
-pub type System = fn(WorldCell);
-
 #[derive(Default)]
-pub struct Schedule {
+pub(crate) struct Schedule {
     systems: Vec<System>,
 }
 

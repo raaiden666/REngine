@@ -1,3 +1,3 @@
-mod color;
+mod api;
 
-pub use color::Color;
+pub use api::*;

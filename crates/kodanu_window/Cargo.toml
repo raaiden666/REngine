@@ -11,4 +11,3 @@ winit = { workspace = true }
 wgpu = { workspace = true }
 
 kodanu_math = { workspace = true }
-kodanu_ecs = { workspace = true }

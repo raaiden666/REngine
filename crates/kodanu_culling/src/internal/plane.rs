@@ -3,7 +3,7 @@ use crate::BoundingSphere;
 use kodanu_math::{Vec3, Vec4};
 
 #[derive(Debug, Clone, Copy)]
-pub struct Plane {
+pub(crate) struct Plane {
     normal: Vec3,
     distance: f32,
 }

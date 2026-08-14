@@ -1,5 +1,3 @@
-mod material;
-mod mesh;
-mod vertex;
+mod api;
 
-pub use {material::Material, mesh::Mesh, vertex::Vertex};
+pub use api::*;

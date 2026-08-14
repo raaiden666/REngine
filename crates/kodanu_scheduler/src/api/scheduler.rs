@@ -17,6 +17,15 @@ impl Default for Scheduler {
 }
 
 impl Scheduler {
+    pub fn with_capacity(capacity: usize) -> Self {
+        Self {
+            schedules: from_fn(|_| Schedule::with_capacity(capacity)),
+            fixed_runner: FixedRunner::default(),
+        }
+    }
+}
+
+impl Scheduler {
     pub fn add(&mut self, stage: Stage, system: System) {
         self.schedules[stage.as_usize()].add(system);
     }

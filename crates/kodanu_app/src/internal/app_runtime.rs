@@ -1,7 +1,6 @@
 use crate::AppConfig;
 
 use {
-    anyhow::{Ok, Result},
     kodanu_graphics::{RenderItem, Renderer},
     kodanu_math::{Mat4, UVec2},
     kodanu_window::Window,
@@ -15,7 +14,7 @@ pub(crate) struct AppRuntime {
 }
 
 impl AppRuntime {
-    pub fn new(event_loop: &ActiveEventLoop, config: &AppConfig) -> Result<Self> {
+    pub fn new(event_loop: &ActiveEventLoop, config: &AppConfig) -> Self {
         let window = event_loop
             .create_window(WindowAttributes::from(config.window()))
             .expect("Failed to create window");
@@ -25,7 +24,7 @@ impl AppRuntime {
 
         window.request_redraw();
 
-        Ok(Self { window, renderer })
+        Self { window, renderer }
     }
 }
 
