@@ -14,7 +14,7 @@ pub(crate) struct AppRuntime {
 }
 
 impl AppRuntime {
-    pub fn new(event_loop: &ActiveEventLoop, config: &AppConfig) -> Self {
+    pub fn new(event_loop: &dyn ActiveEventLoop, config: &AppConfig) -> Self {
         let window = event_loop
             .create_window(WindowAttributes::from(config.window()))
             .expect("Failed to create window");

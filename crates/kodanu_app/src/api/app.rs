@@ -6,7 +6,7 @@ use {
     kodanu_ecs::{Read, World, Write},
     kodanu_editor::{EditorView, EditorViewPlugin},
     kodanu_graphics::{RenderQueue, RenderQueuePlugin, RendererConfig},
-    kodanu_input::{Input, KeyCode, WinitHandler},
+    kodanu_input::{Input, WinitHandler},
     kodanu_log::LogConfig,
     kodanu_math::{DVec2, UVec2},
     kodanu_plugin::{Plugin, PluginRegistry},
@@ -35,12 +35,12 @@ pub struct App {
 }
 
 impl App {
-    pub fn run(mut self) {
+    pub fn run(self) {
         fmt().with_env_filter(self.config.log().env_filter()).init();
 
         let event_loop = EventLoop::new().expect("Failed to create event loop");
 
-        event_loop.run_app(&mut self).expect("Failed to run app");
+        event_loop.run_app(self).expect("Failed to run app");
     }
 }
 
@@ -129,7 +129,7 @@ impl App {
 }
 
 impl ApplicationHandler for App {
-    fn resumed(&mut self, event_loop: &ActiveEventLoop) {
+    fn can_create_surfaces(&mut self, event_loop: &dyn ActiveEventLoop) {
         if self.runtime.is_some() {
             return;
         }
@@ -144,43 +144,36 @@ impl ApplicationHandler for App {
 
     fn window_event(
         &mut self,
-        event_loop: &ActiveEventLoop,
+        event_loop: &dyn ActiveEventLoop,
         _window_id: WindowId,
         event: WindowEvent,
     ) {
         match event {
             WindowEvent::CloseRequested => event_loop.exit(),
-            WindowEvent::RedrawRequested => self.handle_redraw(event_loop),
-            WindowEvent::Resized(size) => self.handle_resize(size),
+            WindowEvent::RedrawRequested => self.handle_redraw(),
+            WindowEvent::SurfaceResized(size) => self.handle_resize(size),
             _ => self.handle_input(event),
         }
     }
 }
 
 impl App {
-    fn handle_redraw(&mut self, event_loop: &ActiveEventLoop) {
+    fn handle_redraw(&mut self) {
         let (world, runtime) = (self.world.cell(), unsafe {
             self.runtime.as_mut().unwrap_unchecked()
         });
 
-        let (input, editor, queue, time) = (
-            world.res::<Read<Input>>(),
+        let (editor, queue, time) = (
             world.res::<Read<EditorView>>(),
             world.res::<Read<RenderQueue>>(),
             world.res::<Read<Time>>(),
         );
 
-        if input.key_just_pressed(KeyCode::Escape) {
-            event_loop.exit();
-        }
-
         self.scheduler.run_fixed(world, time.delta());
-
         self.scheduler.run_update(world);
         self.scheduler.run_render(world);
 
         runtime.render(editor.view_projection(), queue.items());
-
         runtime.request_redraw();
     }
 
@@ -203,10 +196,7 @@ impl App {
             WindowEvent::KeyboardInput { event, .. } => {
                 WinitHandler::handle_keyboard_input(input, &event);
             }
-            WindowEvent::MouseInput { state, button, .. } => {
-                WinitHandler::handle_mouse_input(input, state, button);
-            }
-            WindowEvent::CursorMoved { position, .. } => {
+            WindowEvent::PointerMoved { position, .. } => {
                 WinitHandler::handle_cursor_move(input, DVec2::new(position.x, position.y));
             }
             WindowEvent::MouseWheel { delta, .. } => {

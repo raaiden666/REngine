@@ -25,7 +25,7 @@ members = [
 resolver = "3"
 
 [workspace.dependencies]
-winit = { version = "0.30.13" }
+winit = { version = "0.31.0-beta.2" }
 wgpu = { version = "30.0.0" }
 glam = { version = "0.33.2"}
 

@@ -7,13 +7,13 @@ use {
 use winit::window::Window as WinitWindow;
 
 pub struct Window {
-    window: Arc<WinitWindow>,
+    window: Arc<dyn WinitWindow>,
 }
 
 impl Window {
-    pub fn new(window: WinitWindow) -> Self {
+    pub fn new(window: Box<dyn WinitWindow>) -> Self {
         Self {
-            window: Arc::new(window),
+            window: Arc::from(window),
         }
     }
 }
@@ -24,7 +24,7 @@ impl Window {
     }
 
     pub fn size(&self) -> UVec2 {
-        let size = self.window.inner_size();
+        let size = self.window.surface_size();
 
         UVec2::new(size.height, size.width)
     }

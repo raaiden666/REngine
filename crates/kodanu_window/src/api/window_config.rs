@@ -68,8 +68,8 @@ impl From<&WindowConfig> for WindowAttributes {
     fn from(value: &WindowConfig) -> Self {
         WindowAttributes::default()
             .with_title(value.title)
-            .with_inner_size(PhysicalSize::new(value.width, value.height))
-            .with_min_inner_size(PhysicalSize::new(value.min_width, value.min_height))
+            .with_surface_size(PhysicalSize::new(value.width, value.height))
+            .with_min_surface_size(PhysicalSize::new(value.min_width, value.min_height))
             .with_maximized(value.maximized)
             .with_decorations(value.decorations)
     }
