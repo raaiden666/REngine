@@ -4,7 +4,7 @@ use {
     kodanu_ecs::{WorldCell, Write},
     kodanu_plugin::{Plugin, PluginRegistry},
     kodanu_scheduler::Stage,
-    std::time::Instant,
+    web_time::Instant,
 };
 
 pub struct TimePlugin;
@@ -22,10 +22,10 @@ fn update_time_system(world: WorldCell) {
     let time = world.res::<Write<Time>>();
 
     let now = Instant::now();
-    let delta = now.duration_since(time.last());
+    let delta = now.duration_since(time.last);
 
-    time.set_delta(delta.min(time.max_delta()));
-    time.set_elapsed(now.duration_since(time.startup()));
+    time.delta = delta.min(time.max_delta);
+    time.elapsed = now.duration_since(time.startup);
 
-    time.set_last(now);
+    time.last = now;
 }

@@ -7,6 +7,8 @@ edition = "2024"
 path = "src/_lib.rs"
 
 [dependencies]
+web-time = { workspace = true }
+
 kodanu_ecs = { workspace = true }
 kodanu_plugin = { workspace = true }
 kodanu_scheduler = { workspace = true }

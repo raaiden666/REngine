@@ -40,6 +40,7 @@ tracing = { version = "0.1.44" }
 tracing-subscriber = { version = "0.3.23", features = ["env-filter"] }
 
 hashbrown = { version = "0.17.1" }
+web-time = { version = "1.1.0" }
 
 kodanu = { package = "kodanu", path = "crates/kodanu" }
 kodanu_app = { package = "kodanu_app", path = "crates/kodanu_app" }

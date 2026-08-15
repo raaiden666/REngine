@@ -1,12 +1,12 @@
-use std::time::{Duration, Instant};
+use web_time::{Duration, Instant};
 
 #[derive(Debug, Clone, Copy)]
 pub struct Time {
-    startup: Instant,
-    last: Instant,
-    delta: Duration,
-    elapsed: Duration,
-    max_delta: Duration,
+    pub(crate) startup: Instant,
+    pub(crate) last: Instant,
+    pub(crate) delta: Duration,
+    pub(crate) elapsed: Duration,
+    pub(crate) max_delta: Duration,
 }
 
 impl Default for Time {
@@ -32,37 +32,5 @@ impl Time {
     #[inline]
     pub fn elapsed(&self) -> f32 {
         self.elapsed.as_secs_f32()
-    }
-}
-
-impl Time {
-    #[inline]
-    pub(crate) fn last(&self) -> Instant {
-        self.last
-    }
-
-    #[inline]
-    pub(crate) fn max_delta(&self) -> Duration {
-        self.max_delta
-    }
-
-    #[inline]
-    pub(crate) fn startup(&self) -> Instant {
-        self.startup
-    }
-
-    #[inline]
-    pub(crate) fn set_delta(&mut self, delta: Duration) {
-        self.delta = delta;
-    }
-
-    #[inline]
-    pub(crate) fn set_elapsed(&mut self, elapsed: Duration) {
-        self.elapsed = elapsed;
-    }
-
-    #[inline]
-    pub(crate) fn set_last(&mut self, last: Instant) {
-        self.last = last;
     }
 }

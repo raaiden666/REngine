@@ -923,6 +923,7 @@ dependencies = [
  "kodanu_ecs",
  "kodanu_plugin",
  "kodanu_scheduler",
+ "web-time",
 ]
 
 [[package]]
